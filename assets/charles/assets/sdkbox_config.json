@@ -1,0 +1,39 @@
+{
+    "android": {
+        "GoogleAnalytics" : {
+            "trackingCode" : "UA-70268633-5"
+        },
+        "iap": {
+            "items": {
+                "coin_50k": {
+                    "id": "coin_50k"
+                },
+                "coin_300k": {
+                    "id": "coin_300k"
+                },
+                "coin_800k": {
+                    "id": "coin_800k"
+                }
+            },
+            "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy/v750FfuJ4xFBYZewx7uqcFHiJUrv4f3aBCrz0zJNTBBK22ASAkrkuZ4hqjqhp456yRHnoK8Kd5zHclqmXxK+AzmKziNP8LCKiSXDJrz4XCFHgp1yhVyB0XHoImUdPYmUI9e5M4lHR3bQpF4cspmQ1YcBngU9DdivzJh+Aeebs2GGnINDCBsdfD9ZEKtrb+Pb2w4tS33p6OlQa+bHRr+rgDyIlsH+u/vFyqN9Fpb6Jw67Bd0Udm1WIa8MLO4ESIhD3LpWQvfOm0exMGRsWA5IFLsK1JDqXfIg15RBvUjamdXcYIIxDWY7PErrmgVIwbk5Y5Y9kab/W0jHHV7g3dHQIDAQAB"
+        }
+    }, 
+    "ios": {
+        "GoogleAnalytics" : {
+            "trackingCode" : "UA-70268633-5"
+        },
+        "iap": {
+            "items": {
+                "coin_50k": {
+                    "id": "coin_50k"
+                },
+                "coin_300k": {
+                    "id": "coin_300k"
+                }, 
+                "coin_800k": {
+                    "id": "coin_800k"
+                }
+            }
+        }
+    }
+}
