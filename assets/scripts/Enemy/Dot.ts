@@ -36,7 +36,6 @@ export class Dot extends Component {
           if (collider) {
               collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
             }
-
             this.PlayerNode.once('Dead',this.isPlayerDead,this);
     }
 
@@ -74,10 +73,10 @@ export class Dot extends Component {
     }
 
     isPlayerDead(){
-      
+
     }
     
-
+    //遍历Dot
     EatingMan(){
 
     }
