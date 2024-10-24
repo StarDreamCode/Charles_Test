@@ -1,6 +1,7 @@
 import { _decorator, Component, Event, find, instantiate, math, Node, Prefab } from 'cc';
 import { StartManager } from '../Scene/StartManager';
 import { PlayerController } from '../Player/PlayerController';
+import { Dot } from './Dot';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyManager')
@@ -36,7 +37,14 @@ export class EnemyManager extends Component {
     @property(Prefab)
     Dot6Prefab:Prefab = null;
 
-    
+    @property([Node])
+    DotArray:Node[]=[];
+
+    private static instance:EnemyManager = null;
+
+    public static getInstance():EnemyManager{
+        return this.instance;
+    }
 
     start() {  
         
@@ -47,6 +55,7 @@ export class EnemyManager extends Component {
     }
 
     EnemyGenerated(){
+        EnemyManager.instance = this;
         this.schedule(this.Dot1Spawn,this.Dot1SpawnRate);
         this.schedule(this.Dot2Spawn,this.Dot2SpawnRate);
         this.schedule(this.Dot3Spawn,this.Dot3SpawnRate);
@@ -62,10 +71,12 @@ export class EnemyManager extends Component {
         this.unschedule(this.Dot4Spawn);
         this.unschedule(this.Dot5Spawn);
         this.unschedule(this.Dot6Spawn);
+        
     }
 
     Dot1Spawn(){
         this.DotSpawn(this.Dot1Prefab)
+
     }
     Dot2Spawn(){
         this.DotSpawn(this.Dot2Prefab)
@@ -83,13 +94,35 @@ export class EnemyManager extends Component {
         this.DotSpawn(this.Dot6Prefab)
     }
   
-    DotSpawn(Dotprefab:Prefab){
+    DotSpawn(Dotprefab:Prefab):Node{
         const Dot = instantiate(Dotprefab);
         this.node.addChild(Dot);
         const randomX = math.randomRangeInt(-545,545);
         const randomY = math.randomRangeInt(-880,880);
         Dot.setPosition(randomX,randomY,0);
+        this.DotArray.push(Dot);
+        return Dot;
+    }
 
+    removeEnermy(n:Node) {
+        const index = this.DotArray.indexOf(n);
+        if(index!==-1) {
+            this.DotArray.splice(index,1);
+        }
+    }
+
+    ongetSpiderWeb(){
+        for(let d of this.DotArray) {
+            const dot = d.getComponent(Dot);
+            dot.SpiderWeb();
+        }
+    }
+
+    ongetEatingMan(){
+        for(let d of this.DotArray) {
+            const dot = d.getComponent(Dot);
+            dot.EatingMan();
+        }
     }
 
     

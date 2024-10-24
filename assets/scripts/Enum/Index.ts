@@ -28,7 +28,7 @@ export enum DotType{
     Dot_6,
 
 }
-export enum ItemTyPE{
+export enum ItemType{
     
     BlueEnergy,
     Bomb,
