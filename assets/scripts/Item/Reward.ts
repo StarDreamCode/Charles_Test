@@ -1,6 +1,7 @@
 import { _decorator, Collider2D, Component, Contact2DType, IPhysics2DContact, Node } from 'cc';
 import { ItemType } from '../Enum/Index';
 import { PlayerController } from '../Player/PlayerController';
+import { Item } from './Item';
 const { ccclass, property } = _decorator;
 
 @ccclass('Reward')
@@ -18,7 +19,7 @@ export class Reward extends Component {
     }
 
     onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null){
-        //碰撞后播放电话然后销毁自身
+        //碰撞后播放动画以及音效然后销毁自身
         if(otherCollider.getComponent(PlayerController)){
           this.scheduleOnce(function(){   
             this.node.destroy();
@@ -37,7 +38,16 @@ export class Reward extends Component {
         if (collider) {
               collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
             }
-        
+            //数组的移除
+            Item.getInstance().removeItem(this.node)
+    }
+
+    RewardClear(){
+      //播放动画销毁自身
+
+      this.scheduleOnce(function(){   
+        this.node.destroy();
+      },0.2);
     }
 }
 

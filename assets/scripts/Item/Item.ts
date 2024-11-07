@@ -1,5 +1,6 @@
 import { _decorator, Component, instantiate, math, Node, Prefab } from 'cc';
 import { Index, ItemType, } from '../Enum/Index';
+import { Reward } from './Reward';
 const { ccclass, property } = _decorator;
 
 @ccclass('Item')
@@ -43,14 +44,23 @@ export class Item extends Component {
     Item10Prefab:Prefab = null;
 
     @property
-    Itemnumber:number = 4;
+    ItemMax:number = 4;
+
+    @property([Node])
+    ItemArray:Node[]=[];
 
    // private _item:ItemTyPE[]=[];
       //  @property
    //  ItemType:ItemType = null;
 
+   private static instance:Item = null;
+
+   public static getInstance():Item{
+       return this.instance;
+   }
+
     start() {
-        
+        Item.instance = this; 
     }
 
     update(deltaTime: number) {
@@ -58,13 +68,22 @@ export class Item extends Component {
     }
 
     ItemGenerated(){
-        //判断预制体数量是否小于4个再进行生成    
-        
-        this.schedule(this.ItemSystemSpawn,this.ItemSpawnRate);
+        //判断预制体数量是否小于4个再进行生成
+        let count = this.ItemArray.length;
+        if(count > this.ItemMax) {
+            this.unschedule(this.ItemSystemSpawn);
+        }else {
+            this.schedule(this.ItemSystemSpawn,this.ItemSpawnRate);
+        }
     }
 
     public onDestroy(): void {
         this.unschedule(this.ItemSystemSpawn);
+
+        for(let r of this.ItemArray) {
+            const reward = r.getComponent(Reward);
+            reward.RewardClear();
+        }   
         
     }
 
@@ -97,14 +116,23 @@ export class Item extends Component {
         this.ItemSpawn(Prefab);
     }
     
-    ItemSpawn(Itemprefab:Prefab){
+    ItemSpawn(Itemprefab:Prefab):Node{
        // this._item.push( math.randomRangeInt(0,10))
         const Item = instantiate(Itemprefab);
         this.node.addChild(Item);
         const randomX = math.randomRangeInt(-545,545);
         const randomY = math.randomRangeInt(-880,880);
         Item.setPosition(randomX,randomY,0);
+        this.ItemArray.push(Item);
+        return Item;
 
+    }
+
+    removeItem(n:Node) {
+        const index = this.ItemArray.indexOf(n);
+        if(index!==-1) {
+            this.ItemArray.splice(index,1);
+        }
     }
 
 

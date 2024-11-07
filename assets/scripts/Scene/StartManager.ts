@@ -32,6 +32,9 @@ export class StartManager extends Component {
     public BgAnime:Animation = null;
 
     @property(Animation)
+    public BgAnimeback:Animation = null;
+
+    @property(Animation)
     public GuiEnd:Animation = null;
 
     @property(Node)
@@ -41,7 +44,7 @@ export class StartManager extends Component {
     public PauseMask:Node = null;
 
     @property
-    private score:number=0;
+    private Coin:number=0;
 
     @property(ScoreUI)
     ScoreUI:ScoreUI= null;
@@ -60,7 +63,7 @@ export class StartManager extends Component {
         return this.instance;
     }  
 
-    public Timer = 0;
+    public Timer = 0; 
 
     private _elapsedTime = 0;
 
@@ -74,44 +77,42 @@ export class StartManager extends Component {
 
     start() {
         this.setCurState(GameState.GS_START); 
-        
-        this.PlayerController.node.once('out_of_range',this.out_of_range,this);
-        this.PlayerController.node.once('Dead',this.Dead,this);
-       
-
-
     }
     out_of_range(){
         this.setCurState(GameState.GS_GAME);
     }
-
     Dead(){
         this.setCurState(GameState.GS_END);
     }
 
     onShopButtonClick(){
-        console.log("按到了");
         this.Shop.active = true;
+        this.PlayerController.disableControl();      
+    }
+    onShopButtonBackClick(){
+        this.Shop.active = false;
+        this.setCurState(GameState.GS_START);
         
     }
+
     onPauseButtonClick(){
-        console.log('暂停游戏');
-    //    director.pause();
-        game.pause();
+        director.pause();
         this.PauseMask.active=true;
+        this.BGM.pause();
         this.PlayerController.disableControl();
         
     }
-    onResumeButtionClick(){
-   //     director.resume();
-        game.resume();
+    onResumeButtionClick(){ 
+        director.resume();
         this.PauseMask.active=false;
+        this.BGM.play();
         this.PlayerController.enableControl();
     }
     onHomeButtionClick(){
         this.setCurState(GameState.GS_START);
     }
     onRestartButtionClick(){
+        this.EndUI.node.active = false;
         this.setCurState(GameState.GS_START);
     }
     onHowtoButtionClick(){
@@ -121,39 +122,51 @@ export class StartManager extends Component {
    
     setCurState(value:GameState){
         if(value==GameState.GS_START){
+            this.BgAnimeback.play();
+            this.PlayerController.node.setPosition(0,0,0);
+            this.PlayerController.node.once('out_of_range',this.out_of_range,this);
             this.GUI.active=false;
             this.BGM.stop();
+            this.PlayerController.enableControl();
             
             
 
 
         }else if(value==GameState.GS_GAME){
             this.startTimer();
+            this.PlayerController.enableControl();     
             this.EnemyManager.EnemyGenerated();
             this.Item.ItemGenerated();
             this.GUI.active=true;
             this.BgAnime.play('BgAnime');
             this.BGM.play();
+            this.PlayerController.node.once('Dead',this.Dead,this);
+            
+            
             
             
         }else if(value==GameState.GS_END){
             this.GameOverSum();
-          //  this.PlayerController.node.active = false;
             this.GuiEnd.play();
+            this.GUI.active=false;
             this.EnemyManager.onDestroy();
             this.Item.onDestroy();   
             this.BGM.stop();
-            this.PlayerController.destroy();
+            this.PlayerController.disableControl();
+            
         }
         
     }
 
     public addScore (s:number) {
-        this.score+=s;
-        this.ScoreUI.updateUI(this.score);
+        this.Coin += s;
+        this.ScoreUI.updateUI(this.Coin);
     }
 
     startTimer() {
+
+        this._elapsedTime = 0;
+        
         this._counting = true;
 
         this.schedule(this.updateTimeUI)
@@ -186,6 +199,8 @@ export class StartManager extends Component {
             localStorage.setItem("HighestScore",this.Timer.toString());//存储数据
         }
 
+
+        
         let TotalCoin = localStorage.getItem("TotalCoin");
         let TotalCoinInt = 0 ;
 
@@ -193,12 +208,11 @@ export class StartManager extends Component {
             TotalCoinInt = parseInt(TotalCoin,10);  //读取数据 10进制
         }
         
-        if(this.score>TotalCoinInt) {
-            this.score += TotalCoinInt;
-            localStorage.setItem("TotalCoin",this.score.toString());//存储数据
-        }
+        TotalCoinInt += this.Coin;
+        localStorage.setItem("TotalCoin",TotalCoinInt.toString());//存储数据
+        
 
-        this.EndUI.ShowGameOverUI(hScoreInt,this.Timer,this.score);
+        this.EndUI.ShowGameOverUI(hScoreInt,this.Timer,TotalCoinInt);
     }
     
     update(deltaTime: number) {

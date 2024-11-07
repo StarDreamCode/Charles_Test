@@ -47,7 +47,7 @@ export class EnemyManager extends Component {
     }
 
     start() {  
-        
+        EnemyManager.instance = this;
     }
 
     update(deltaTime: number) {
@@ -55,7 +55,6 @@ export class EnemyManager extends Component {
     }
 
     EnemyGenerated(){
-        EnemyManager.instance = this;
         this.schedule(this.Dot1Spawn,this.Dot1SpawnRate);
         this.schedule(this.Dot2Spawn,this.Dot2SpawnRate);
         this.schedule(this.Dot3Spawn,this.Dot3SpawnRate);
@@ -71,7 +70,12 @@ export class EnemyManager extends Component {
         this.unschedule(this.Dot4Spawn);
         this.unschedule(this.Dot5Spawn);
         this.unschedule(this.Dot6Spawn);
-        
+
+     /*   for(let d of this.DotArray) {
+            const dot = d.getComponent(Dot);
+             dot.DotClear();
+          }   
+     */ 
     }
 
     Dot1Spawn(){
@@ -104,17 +108,10 @@ export class EnemyManager extends Component {
         return Dot;
     }
 
-    removeEnermy(n:Node) {
+    removeDot(n:Node) {
         const index = this.DotArray.indexOf(n);
         if(index!==-1) {
             this.DotArray.splice(index,1);
-        }
-    }
-
-    ongetSpiderWeb(){
-        for(let d of this.DotArray) {
-            const dot = d.getComponent(Dot);
-            dot.SpiderWeb();
         }
     }
 
@@ -124,8 +121,6 @@ export class EnemyManager extends Component {
             dot.EatingMan();
         }
     }
-
-    
 }
 
 

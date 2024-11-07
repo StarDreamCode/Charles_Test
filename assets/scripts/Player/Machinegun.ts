@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, find, instantiate, Node, Prefab } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Machinegun')
@@ -18,8 +18,18 @@ export class Machinegun extends Component {
     @property(Node)
     Player:Node = null;
 
+    @property
+    Time:number = 5;
+
+    protected onLoad(): void {
+    //  this.BulletParent=find("Canvas/Bg/Item_Info/BulletParent");
+      
+  }
+
     start() {
         this.schedule(this.BulletSpawn,this.ShootRate);
+        this.scheduleOnce(this.MachinegunOff,this.Time);
+        
      //   const p = this.Player.getRotation();
       //  this.BulletParent.setRotation(p);
     }
@@ -40,6 +50,14 @@ export class Machinegun extends Component {
         const bullet = instantiate(this.Bullet);
         this.BulletParent.addChild(bullet);
         bullet.setWorldPosition(this.node.getChildByName("Machinegun_position").worldPosition);
+    }
+
+    MachinegunOff(){
+      this.node.active =false;
+    }
+
+    protected onDestroy(): void {
+      
     }
 }
 

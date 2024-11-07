@@ -1,8 +1,9 @@
-import { _decorator, Component, find, math, Node, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, find, Node, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('Machinegun_bullet')
-export class Machinegun_bullet extends Component {
+@ccclass('BlueEnergy')
+export class BlueEnergy extends Component {
+
     @property
     speed:number = 1200;
 
@@ -14,16 +15,14 @@ export class Machinegun_bullet extends Component {
 
     protected onLoad(): void {
         this.PlayerNode=find("Canvas/Bg/Player");
-        
     }
 
-    start() {
-       // let PlayerAngle = this.PlayerNode.getWorldRotation();
+    start() {  
         this.node.rotation = this.PlayerNode.rotation;
         this.direction = this.node.getWorldPosition().subtract(this.PlayerNode.getWorldPosition()).normalize();
         this.inited = true;
     }
-   
+
     update(deltaTime: number) {
         if(!this.inited) {
             return;
@@ -33,11 +32,9 @@ export class Machinegun_bullet extends Component {
         this.node.position = pos.add(deltaPos);
 
         var p = this.node.position;
-        if(p.x>2000||p.x<-2000||p.y>4000||p.y<-4000){
+        if(p.x>1200||p.x<-1200||p.y>1500||p.y<-1500){
             this.node.destroy();
         }
-   
-      
     }
 }
 

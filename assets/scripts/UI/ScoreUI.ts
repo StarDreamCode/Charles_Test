@@ -7,23 +7,18 @@ export class ScoreUI extends Component {
     @property(Label)
     Coin:Label= null;
 
-    //private _CurPos = new Vec3();
+    start() {
+        
+    }
 
     updateUI(count:number){
         this.Coin.string=count.toString();
-       /* var i=count.toString().length;
-        const CurPos = this.node.position;
-        this.node.setPosition(CurPos.x-i*40,CurPos.y,CurPos.z);*/
-      
-        
-    }
-    start() {
-        
     }
 
     update(deltaTime: number) {
         
     }
+
 }
 
 
