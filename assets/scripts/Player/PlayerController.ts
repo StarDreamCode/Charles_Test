@@ -22,7 +22,7 @@ export class PlayerController extends Component {
     Emotion_Woops_Audio:AudioSource = null;
 
     @property
-    PlayerSpeed:number = 1;
+    PlayerSpeed:number = 0.5;
 
     @property(Node)
     Machinegun:Node;
@@ -33,8 +33,19 @@ export class PlayerController extends Component {
     @property(Prefab)
     RedEnergy:Prefab = null;
 
+    @property(Prefab)
+    Wiper:Prefab = null;
+
+    @property(Prefab)
+    Fire:Prefab = null;
+
+    @property(Prefab)
+    SpiderWeb:Prefab = null;
+
     @property(Node)
     Item_info:Node = null;
+
+    
     
 
     public _canControl:boolean = true;
@@ -190,32 +201,33 @@ export class PlayerController extends Component {
     }
     getBlueEnergy(){
        // this.node.getComponent(Animation).play('BlueEnergy');
-        this.scheduleOnce(this.BlueEnergySpawn,1);
         console.log("getBlueEnergy");
+        this.scheduleOnce(this.BlueEnergySpawn,0.1);
     }
     getBomb(){
         console.log("getBomb");
     }
     getRedEnergy(){
         console.log("getRedEneygy");
-        this.scheduleOnce(this.RedEnergySpawn,1);
+        this.scheduleOnce(this.RedEnergySpawn,0.1);
     }
     getFlyingSaw(){
         console.log("getFlyingSaw");
     }
     getSpiderWeb(){
         console.log("getSpiderWeb");
+        this.scheduleOnce(this.SpiderWebSpawn,0.1);
     }
     getShield(){
         console.log("getShield");
     }
     getWiper(){
         console.log("getWiper");
+        this.scheduleOnce(this.WiperSpawn,0.1);
     }
     getTurret(){
         console.log("getTurret");
-      //  this.Machinegun.active = true;
-          
+        this.Machinegun.active = true;    
     }
     getEatingMan(){
         console.log("getEatingMan");
@@ -223,6 +235,9 @@ export class PlayerController extends Component {
     }
     getFire(){
         console.log("getFire");
+        this.schedule(this.FireSpawn,0.1);
+        this.scheduleOnce(this.StopFireSpawn,4);
+
     }
     getCoin(){
         console.log("getFire");
@@ -239,6 +254,25 @@ export class PlayerController extends Component {
         this.Item_info.addChild(Red_bullet);
         Red_bullet.setWorldPosition(this.node.worldPosition);
     }
+    WiperSpawn(){
+        const Wiper = instantiate(this.Wiper);
+        this.Item_info.addChild(Wiper);
+        
+    }
+    FireSpawn(){
+        const Fire = instantiate(this.Fire);
+        this.Item_info.addChild(Fire);
+        Fire.setWorldPosition(this.node.worldPosition);
+    }
+    StopFireSpawn(){
+        this.unschedule(this.FireSpawn);
+    }
+
+    SpiderWebSpawn(){
+        const SpiderWeb = instantiate(this.SpiderWeb);
+        this.Item_info.addChild(SpiderWeb);
+        SpiderWeb.setWorldPosition(this.node.worldPosition);
+    }
 
 
     onContactToDot(){
@@ -247,6 +281,12 @@ export class PlayerController extends Component {
         this.Emotion_Woops.play();
         this.Emotion_Woops_Audio.play();
         this.node.emit('Dead');
+        
+        this.unschedule(this.FireSpawn);
+        this.unschedule(this.WiperSpawn);
+        this.unschedule(this.RedEnergySpawn);
+        this.unschedule(this.BlueEnergySpawn);
+        
     }
 
     onPreSolve (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {

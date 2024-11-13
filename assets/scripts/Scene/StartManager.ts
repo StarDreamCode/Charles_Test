@@ -91,6 +91,7 @@ export class StartManager extends Component {
     }
     onShopButtonBackClick(){
         this.Shop.active = false;
+        this.PlayerController.enableControl(); 
         this.setCurState(GameState.GS_START);
         
     }
@@ -150,7 +151,8 @@ export class StartManager extends Component {
             this.GuiEnd.play();
             this.GUI.active=false;
             this.EnemyManager.onDestroy();
-            this.Item.onDestroy();   
+            this.Item.onDestroy();
+               
             this.BGM.stop();
             this.PlayerController.disableControl();
             

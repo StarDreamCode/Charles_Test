@@ -277,8 +277,12 @@
     "__prefab": {
       "__id__": 13
     },
-    "speed": 100,
+    "speed": 40,
     "Score": 1,
+    "DotSpiderWeb": {
+      "__uuid__": "3df1d865-5985-4b7b-8ea4-21eb4c11a363",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": ""
   },
   {
@@ -358,6 +362,7 @@
       "__id__": 0
     },
     "fileId": "b3M4iIvJ1B/qy5UU5nTKcX",
+    "instance": null,
     "targetOverrides": null
   }
 ]

@@ -80,7 +80,6 @@ export class EnemyManager extends Component {
 
     Dot1Spawn(){
         this.DotSpawn(this.Dot1Prefab)
-
     }
     Dot2Spawn(){
         this.DotSpawn(this.Dot2Prefab)

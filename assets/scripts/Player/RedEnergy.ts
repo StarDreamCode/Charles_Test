@@ -7,7 +7,7 @@ export class RedEnergy extends Component {
 
         this.scheduleOnce(function(){   
             this.node.destroy();
-          },10);
+          },4);
     }
 
 

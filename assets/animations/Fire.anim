@@ -22,7 +22,7 @@
     "_events": [],
     "_embeddedPlayers": [],
     "_additiveSettings": {
-      "__id__": 6
+      "__id__": 7
     },
     "_auxiliaryCurveEntries": []
   },
@@ -36,7 +36,7 @@
       "proxy": null
     },
     "_channel": {
-      "__id__": 4
+      "__id__": 5
     }
   },
   {
@@ -45,8 +45,15 @@
       {
         "__id__": 3
       },
+      {
+        "__id__": 4
+      },
       "spriteFrame"
     ]
+  },
+  {
+    "__type__": "cc.animation.HierarchyPath",
+    "path": "Fire"
   },
   {
     "__type__": "cc.animation.ComponentPath",
@@ -55,14 +62,15 @@
   {
     "__type__": "cc.animation.Channel",
     "_curve": {
-      "__id__": 5
+      "__id__": 6
     }
   },
   {
     "__type__": "cc.ObjectCurve",
     "_times": [
       0,
-      0.25,
+      0.16666666666666666,
+      0.3333333333333333,
       0.5
     ],
     "_values": [
@@ -76,6 +84,10 @@
       },
       {
         "__uuid__": "56d3aab9-5789-4c66-9ab1-f68fac2ee1d5@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "8fada805-393f-49f1-933e-63b0085ac094@f9941",
         "__expectedType__": "cc.SpriteFrame"
       }
     ]

@@ -212,12 +212,13 @@
       {
         "__uuid__": "0a326bf5-08b0-4b9b-8752-891c73989f18",
         "__expectedType__": "cc.AnimationClip"
+      },
+      {
+        "__uuid__": "686a66fc-ea59-4405-a588-60a0a576cf9a",
+        "__expectedType__": "cc.AnimationClip"
       }
     ],
-    "_defaultClip": {
-      "__uuid__": "0a326bf5-08b0-4b9b-8752-891c73989f18",
-      "__expectedType__": "cc.AnimationClip"
-    },
+    "_defaultClip": null,
     "_id": ""
   },
   {
@@ -277,8 +278,12 @@
     "__prefab": {
       "__id__": 13
     },
-    "speed": 100,
+    "speed": 40,
     "Score": 1,
+    "DotSpiderWeb": {
+      "__uuid__": "3df1d865-5985-4b7b-8ea4-21eb4c11a363",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": ""
   },
   {
@@ -358,6 +363,7 @@
       "__id__": 0
     },
     "fileId": "c0WNJMJgNAwbYWfgnEvJx8",
+    "instance": null,
     "targetOverrides": null
   }
 ]

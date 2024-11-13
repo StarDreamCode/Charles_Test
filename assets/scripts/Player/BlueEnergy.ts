@@ -21,6 +21,7 @@ export class BlueEnergy extends Component {
         this.node.rotation = this.PlayerNode.rotation;
         this.direction = this.node.getWorldPosition().subtract(this.PlayerNode.getWorldPosition()).normalize();
         this.inited = true;
+      
     }
 
     update(deltaTime: number) {
