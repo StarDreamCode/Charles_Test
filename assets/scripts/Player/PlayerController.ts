@@ -25,8 +25,8 @@ export class PlayerController extends Component {
     @property
     PlayerSpeed:number = 2;
 
-    @property(Node)
-    Machinegun:Node;
+    @property(Prefab)
+    Machinegun:Prefab = null;
 
     @property(Prefab)
     BlueEnergy:Prefab = null;
@@ -66,6 +66,7 @@ export class PlayerController extends Component {
     public _canControl:boolean = true;
 
     private canMove:boolean = true;
+
     private canRotate:boolean = true;
 
     private static instance:PlayerController;
@@ -231,7 +232,6 @@ export class PlayerController extends Component {
     getFlyingSaw(){
         console.log("getFlyingSaw");
         this.scheduleOnce(this.FlyingSawSpawn,0.1);
-        this.node.emit('Get_Item',this);
     }
     getSpiderWeb(){
         console.log("getSpiderWeb");
@@ -247,8 +247,7 @@ export class PlayerController extends Component {
     }
     getTurret(){
         console.log("getTurret");
-        this.Machinegun.active = true;
-        this.node.emit('Get_Item',this);
+        this.scheduleOnce(this.MachinegunSpawn,0.1);
     }
     getEatingMan(){
         console.log("getEatingMan");
@@ -317,6 +316,11 @@ export class PlayerController extends Component {
         this.Item_info.addChild(EatingMan);
         EatingMan.setWorldPosition(this.node.worldPosition);
     }
+    MachinegunSpawn(){
+        const Machinegun = instantiate(this.Machinegun);
+        this.Item_info.addChild(Machinegun);
+        Machinegun.setWorldPosition(this.node.worldPosition);
+    }
     
 
 
@@ -360,15 +364,18 @@ export class PlayerController extends Component {
  
     }
 
-    
+    checkMachinegunExists(): void {
+        const machineguns = this.Item_info.children.filter(child => child.name === 'Machinegun');
+        if (machineguns.length > 0) {
+            this.canMove = false;
+        } else {
+            this.canMove = true;
+        }
+    }
 
     update(deltaTime: number) {
         this.deltaTime = deltaTime;
-        if(this.Machinegun.active == true){
-            this.canMove = false;
-        }else{
-            this.canMove = true;
-        }               
+        this.checkMachinegunExists();
     }
 
     protected onDestroy(): void {

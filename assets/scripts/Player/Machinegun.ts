@@ -9,8 +9,7 @@ export class Machinegun extends Component {
   /*  @property
     shootTimer:number = 0;*/
 
-    @property(Node)
-    BulletParent:Node = null;
+    public BulletParent:Node = null;
 
     @property(Prefab)
     Bullet:Prefab = null;
@@ -19,20 +18,22 @@ export class Machinegun extends Component {
     Player:Node = null;
 
     @property
-    Time:number = 5;
+    MachinegunTime:number = 5;
 
     public PlayerNode:Node;
 
     protected onLoad(): void {
       this.PlayerNode = find("Canvas/Bg/Player"); 
-    //  this.BulletParent=find("Canvas/Bg/Item_Info/BulletParent");
+      this.BulletParent=find("Canvas/Bg/Item_Info/BulletParent");
       
   }
 
     start() {
         this.schedule(this.BulletSpawn,this.ShootRate);
-        this.scheduleOnce(this.MachinegunOff,this.Time);
-        this.PlayerNode.once('Dead',this.MachinegunOff,this);
+        this.scheduleOnce(() => {   
+          this.node.destroy();
+      }, this.MachinegunTime);  
+        this.PlayerNode.once('Dead',this.MachinegunClear,this);
         
      //   const p = this.Player.getRotation();
       //  this.BulletParent.setRotation(p);
@@ -40,8 +41,8 @@ export class Machinegun extends Component {
 
     update(deltaTime: number) {
 
-      this.node.eulerAngles = this.Player.eulerAngles;
-      this.node.position = this.Player.position;
+      this.node.eulerAngles = this.PlayerNode.eulerAngles;
+      this.node.position = this.PlayerNode.position;
       
       /*  this.shootTimer+=deltaTime;
         if(this.shootTimer>this.ShootRate){
@@ -57,14 +58,16 @@ export class Machinegun extends Component {
         bullet.setWorldPosition(this.node.getChildByName("Machinegun_position").worldPosition);
     }
 
-    MachinegunOff(){
+    MachinegunClear(){
       if(this.node){
-        this.node.active =false;
+        this.scheduleOnce(() => {   
+          this.node.destroy();
+      }, 0.2);  
       }
     }
 
     protected onDestroy(): void {
-      this.PlayerNode.off('Dead',this.MachinegunOff,this);
+      this.PlayerNode.off('Dead',this.MachinegunClear,this);
     }
 }
 

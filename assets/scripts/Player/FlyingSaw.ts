@@ -8,9 +8,9 @@ export class FlyingSaw extends Component {
         this.PlayerNode = find("Canvas/Bg/Player"); 
     }
     start() {
-        this.scheduleOnce(function(){   
+        this.scheduleOnce(() => {   
             this.node.destroy();
-          },3);
+        }, 3);       
         this.PlayerNode.once('Dead',this.FlyingSawClear,this);
     }
 
