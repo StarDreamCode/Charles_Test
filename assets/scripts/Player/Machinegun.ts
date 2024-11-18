@@ -42,6 +42,7 @@ export class Machinegun extends Component {
 
       this.node.eulerAngles = this.Player.eulerAngles;
       this.node.position = this.Player.position;
+      
       /*  this.shootTimer+=deltaTime;
         if(this.shootTimer>this.ShootRate){
             this.shootTimer=0;

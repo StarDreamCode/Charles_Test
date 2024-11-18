@@ -35,11 +35,10 @@ export class Dot extends Component {
 
     private Delay: boolean = false;
 
-    private animationComponent: Animation | null = null;
 
 
     protected onLoad(): void {              
-          this.PlayerNode=find("Canvas/Bg/Player");  
+          this.PlayerNode=find("Canvas/Bg/Player"); 
           if(this.PlayerNode) {
             console.log("已获取Player节点");
             this.IsInited = true;
@@ -58,11 +57,15 @@ export class Dot extends Component {
               collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
             }
             this.PlayerNode.once('Dead',this.DotClear,this);
+            
           //延迟生成点1秒后生成
             this.scheduleOnce(() => {
                 this.Delay = true;
             }, 1);
     }
+    
+   
+
 
     
 
@@ -98,14 +101,14 @@ export class Dot extends Component {
 
 
     update(deltaTime: number) {
-      if (this.IsInited &&  this.Delay) {
+      if (this.IsInited &&  this.Delay ) {
         let PlayerPos = this.PlayerNode.getPosition();
         let DotPos = this.node.position;
-        let direction = PlayerPos.subtract(DotPos).normalize();
-        this.node.position = DotPos.add(direction.multiplyScalar(deltaTime * this.speed));  
+        let direction = PlayerPos.subtract(DotPos).normalize()
+        this.node.position = DotPos.add(direction.multiplyScalar(deltaTime * this.speed));
        }else {
-        return;
-      }
+          return;
+       }
     }
 
     showSwiperDeath() {   

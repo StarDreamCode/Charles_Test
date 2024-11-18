@@ -138,6 +138,8 @@ export class StartManager extends Component {
             this.PlayerController.node.once('out_of_range',this.out_of_range,this);
             this.GUI.active=false;
             this.BGM.stop();
+            const BodyNode = this.PlayerController.node.getChildByName('Body');
+            BodyNode.getComponent(Sprite).node.active = true; 
             this.PlayerController.enableControl();
             
             
@@ -165,6 +167,8 @@ export class StartManager extends Component {
             this.Item.stopItemGenerated();
             this.Item.clearItem();
             this.BGM.stop();
+            const BodyNode = this.PlayerController.node.getChildByName('Body');
+            BodyNode.getComponent(Sprite).node.active = false;           
             this.PlayerController.disableControl();
 
         }

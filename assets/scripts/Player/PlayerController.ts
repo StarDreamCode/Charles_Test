@@ -73,6 +73,8 @@ export class PlayerController extends Component {
     public static getinstance():PlayerController{
         return this.instance;
     }  
+
+    private deltaTime:number = 0;
  
     protected onLoad(): void {
         PlayerController.instance = this;   
@@ -84,32 +86,28 @@ export class PlayerController extends Component {
     public onTouchMove(event:EventTouch){
 
         const p = this.node.position;
-        
-        let targetposion = new Vec3(p.x+event.getDeltaX()*this.PlayerSpeed,p.y+event.getDeltaY()*this.PlayerSpeed,p.z);
 
+        const boundary = { minX: -550, maxX: 550, minY: -877, maxY: 877, };
+        
+        let targetPosition = new Vec3(p.x+event.getDeltaX()*this.PlayerSpeed,p.y+event.getDeltaY()*this.PlayerSpeed,p.z);
+
+        // 应用硬边界限制
+            targetPosition.x = Math.max(Math.min(targetPosition.x, boundary.maxX), boundary.minX);
+            targetPosition.y = Math.max(Math.min(targetPosition.y, boundary.maxY), boundary.minY);
+
+        // 应用软边界限制并发出事件
+        if (targetPosition.x < -40 || targetPosition.x > 40 || targetPosition.y < -40 || targetPosition.y > 40) {
+                this.node.emit('out_of_range', event);
+        }
+ 
         if (this.canRotate) {
-            let radian = Math.atan2(targetposion.y - p.y, targetposion.x - p.x);
+            let radian = Math.atan2(targetPosition.y - p.y, targetPosition.x - p.x);
             this.targetAngle = radian * (180 / Math.PI);
             this.node.angle = this.rotateToDirection(this.node.angle, this.targetAngle - 90, 10, 1);
         }
         
         if (this.canMove) {
-            if (targetposion.x < -40 || targetposion.x > 40 || targetposion.y < -40 || targetposion.y > 40) {
-                this.node.emit('out_of_range', event);
-            }
-            if (targetposion.x < -550) {
-                targetposion.x = -550;
-            }
-            if (targetposion.x > 550) {
-                targetposion.x = 550;
-            }
-            if (targetposion.y < -877) {
-                targetposion.y = -877;
-            }
-            if (targetposion.y > 877) {
-                targetposion.y = 877;
-            }
-            this.node.setPosition(targetposion);
+            this.node.setPosition(targetPosition);
         }
         
     }
@@ -233,6 +231,7 @@ export class PlayerController extends Component {
     getFlyingSaw(){
         console.log("getFlyingSaw");
         this.scheduleOnce(this.FlyingSawSpawn,0.1);
+        this.node.emit('Get_Item',this);
     }
     getSpiderWeb(){
         console.log("getSpiderWeb");
@@ -249,6 +248,7 @@ export class PlayerController extends Component {
     getTurret(){
         console.log("getTurret");
         this.Machinegun.active = true;
+        this.node.emit('Get_Item',this);
     }
     getEatingMan(){
         console.log("getEatingMan");
@@ -363,6 +363,7 @@ export class PlayerController extends Component {
     
 
     update(deltaTime: number) {
+        this.deltaTime = deltaTime;
         if(this.Machinegun.active == true){
             this.canMove = false;
         }else{
