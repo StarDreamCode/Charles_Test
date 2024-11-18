@@ -38,7 +38,7 @@ export class Reward extends Component {
         if (collider) {
               collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
             }
-            //数组的移除
+            //数组Item的移除
             Item.getInstance().removeItem(this.node)
     }
 

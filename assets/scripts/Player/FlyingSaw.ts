@@ -1,29 +1,24 @@
 import { _decorator, Component, find, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('Wiper')
-export class Wiper extends Component {
-
+@ccclass('FlyingSaw')
+export class FlyingSaw extends Component {
     public PlayerNode:Node;
-
-    protected onLoad() {
+    protected onLoad(): void {
         this.PlayerNode = find("Canvas/Bg/Player"); 
     }
     start() {
- 
-        this.scheduleOnce(() => {   
+        this.scheduleOnce(function(){   
             this.node.destroy();
-        }, 4);
-        this.PlayerNode.once('Dead',this.WiperClear,this);
-
-
-        
+          },3);
+        this.PlayerNode.once('Dead',this.FlyingSawClear,this);
     }
-    WiperClear(){
+
+    FlyingSawClear(){
         if(this.node){
             this.scheduleOnce(() => {   
                 this.node.destroy();
-            }, 0.2);
+            }, 0.2);       
         }
     }
 
@@ -32,7 +27,7 @@ export class Wiper extends Component {
     }
 
     protected onDestroy(): void {
-        this.PlayerNode.off('Dead',this.WiperClear,this);
+        this.PlayerNode.off('Dead',this.FlyingSawClear,this);
     }
 }
 

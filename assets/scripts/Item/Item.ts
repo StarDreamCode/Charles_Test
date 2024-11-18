@@ -77,16 +77,6 @@ export class Item extends Component {
         }
     }
 
-    public onDestroy(): void {
-        this.unschedule(this.ItemSystemSpawn);
-
-        for(let r of this.ItemArray) {
-            const reward = r.getComponent(Reward);
-            reward.RewardClear();
-        }   
-        
-    }
-
     ItemSystemSpawn(){
         const randomNumber = math.randomRangeInt(0,10);
         let Prefab = null;
@@ -116,6 +106,12 @@ export class Item extends Component {
         this.ItemSpawn(Prefab);
     }
     
+    /**
+     * 根据给定的预制件生成一个物品节点，并将其添加到当前节点的子节点列表中。
+     *
+     * @param Itemprefab 预制件 - 要生成的物品预制件。
+     * @returns 返回生成的物品节点。
+     */
     ItemSpawn(Itemprefab:Prefab):Node{
        // this._item.push( math.randomRangeInt(0,10))
         const Item = instantiate(Itemprefab);
@@ -128,11 +124,31 @@ export class Item extends Component {
 
     }
 
+    /**
+     * 从数组中移除指定的节点
+     *
+     * @param n 要移除的节点
+     */
     removeItem(n:Node) {
         const index = this.ItemArray.indexOf(n);
         if(index!==-1) {
             this.ItemArray.splice(index,1);
         }
+    }
+
+    clearItem() {
+        for(let r of this.ItemArray) {
+            const reward = r.getComponent(Reward);
+            reward.RewardClear();
+        }   
+    }
+
+    stopItemGenerated() {
+        this.unschedule(this.ItemSystemSpawn);
+    }
+
+    public onDestroy(): void {
+        this.unscheduleAllCallbacks();
     }
 
 

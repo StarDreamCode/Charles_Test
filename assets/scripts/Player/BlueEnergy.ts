@@ -21,7 +21,16 @@ export class BlueEnergy extends Component {
         this.node.rotation = this.PlayerNode.rotation;
         this.direction = this.node.getWorldPosition().subtract(this.PlayerNode.getWorldPosition()).normalize();
         this.inited = true;
+        this.PlayerNode.once('Dead',this.BlueEnergyClear,this);
       
+    }
+
+    BlueEnergyClear(){
+        if(this.node){
+            this.scheduleOnce(() => {   
+                this.node.destroy();
+            }, 0.2);            
+        }
     }
 
     update(deltaTime: number) {
@@ -37,6 +46,7 @@ export class BlueEnergy extends Component {
             this.node.destroy();
         }
     }
+    
 }
 
 

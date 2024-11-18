@@ -21,7 +21,10 @@ export class Machinegun extends Component {
     @property
     Time:number = 5;
 
+    public PlayerNode:Node;
+
     protected onLoad(): void {
+      this.PlayerNode = find("Canvas/Bg/Player"); 
     //  this.BulletParent=find("Canvas/Bg/Item_Info/BulletParent");
       
   }
@@ -29,6 +32,7 @@ export class Machinegun extends Component {
     start() {
         this.schedule(this.BulletSpawn,this.ShootRate);
         this.scheduleOnce(this.MachinegunOff,this.Time);
+        this.PlayerNode.once('Dead',this.MachinegunOff,this);
         
      //   const p = this.Player.getRotation();
       //  this.BulletParent.setRotation(p);
@@ -53,11 +57,13 @@ export class Machinegun extends Component {
     }
 
     MachinegunOff(){
-      this.node.active =false;
+      if(this.node){
+        this.node.active =false;
+      }
     }
 
     protected onDestroy(): void {
-      
+      this.PlayerNode.off('Dead',this.MachinegunOff,this);
     }
 }
 

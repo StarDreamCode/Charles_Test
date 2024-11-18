@@ -43,6 +43,9 @@ export class StartManager extends Component {
     @property(Node)
     public PauseMask:Node = null;
 
+    @property(Node)
+    public Howto:Node = null;
+
     @property
     private Coin:number=0;
 
@@ -77,6 +80,7 @@ export class StartManager extends Component {
 
     start() {
         this.setCurState(GameState.GS_START); 
+        this.PlayerController.node.on('get100Coin',this.addScorePlus,this)
     }
     out_of_range(){
         this.setCurState(GameState.GS_GAME);
@@ -109,15 +113,21 @@ export class StartManager extends Component {
         this.BGM.play();
         this.PlayerController.enableControl();
     }
-    onHomeButtionClick(){
+    onHomeButtonClick(){
         this.setCurState(GameState.GS_START);
+        this.EnemyManager.onDestroy();
     }
     onRestartButtionClick(){
         this.EndUI.node.active = false;
         this.setCurState(GameState.GS_START);
     }
     onHowtoButtionClick(){
+        this.Howto.active = true;
+        
+    }
 
+    offHowtoButtionClick(){
+        this.Howto.active = false;
     }
 
    
@@ -142,6 +152,7 @@ export class StartManager extends Component {
             this.BgAnime.play('BgAnime');
             this.BGM.play();
             this.PlayerController.node.once('Dead',this.Dead,this);
+            this.ScoreUI.updateUI(0);
             
             
             
@@ -150,28 +161,38 @@ export class StartManager extends Component {
             this.GameOverSum();
             this.GuiEnd.play();
             this.GUI.active=false;
-            this.EnemyManager.onDestroy();
-            this.Item.onDestroy();
-               
+            this.EnemyManager.stopEnemyGenerated();
+            this.Item.stopItemGenerated();
+            this.Item.clearItem();
             this.BGM.stop();
             this.PlayerController.disableControl();
-            
+
         }
         
     }
 
-    public addScore (s:number) {
-        this.Coin += s;
+    public addScore (scoreToAdd: number) {
+        this.Coin += scoreToAdd;
+    if (this.ScoreUI) {
         this.ScoreUI.updateUI(this.Coin);
+    } else {
+        console.error("ScoreUI is not initialized.");
+    }
+    }
+
+    public addScorePlus () {
+        this.Coin += 100;
+    if (this.ScoreUI) {
+        this.ScoreUI.updateUI(this.Coin);
+    } else {
+        console.error("ScoreUI is not initialized.");
+    }
     }
 
     startTimer() {
-
         this._elapsedTime = 0;
-        
         this._counting = true;
-
-        this.schedule(this.updateTimeUI)
+        this.schedule(this.updateTimeUI,1)
     }
 
     updateTimeUI(dt: number) {
@@ -194,7 +215,7 @@ export class StartManager extends Component {
         let hScoreInt = 0 ;
 
         if(hScore!==null) {
-            hScoreInt = parseInt(hScore,10);  //读取数据 10进制
+            hScoreInt = parseInt(hScore || "0",10);  //读取数据 10进制
         }
         
         if(this.Timer>hScoreInt) {
@@ -207,7 +228,7 @@ export class StartManager extends Component {
         let TotalCoinInt = 0 ;
 
         if(TotalCoin==null) {
-            TotalCoinInt = parseInt(TotalCoin,10);  //读取数据 10进制
+            TotalCoinInt = parseInt(TotalCoin || "0",10);  //读取数据 10进制
         }
         
         TotalCoinInt += this.Coin;
@@ -222,7 +243,7 @@ export class StartManager extends Component {
     }
 
     protected onDestroy(): void {
-       
+       this.node.off('get100Coin',this.addScorePlus,this);
     }
 }
 

@@ -1,4 +1,4 @@
-import { _decorator, Component, Event, find, instantiate, math, Node, Prefab } from 'cc';
+import { _decorator, Component, Event, find, instantiate, math, Node, Prefab, Vec2, Vec3 } from 'cc';
 import { StartManager } from '../Scene/StartManager';
 import { PlayerController } from '../Player/PlayerController';
 import { Dot } from './Dot';
@@ -6,44 +6,29 @@ const { ccclass, property } = _decorator;
 
 @ccclass('EnemyManager')
 export class EnemyManager extends Component {
-
-    @property
-    speed:number = 5;
-
-    @property
-    Dot1SpawnRate:number = 1;
-    @property
-    Dot2SpawnRate:number = 2;
-    @property
-    Dot3SpawnRate:number = 3;
-    @property
-    Dot4SpawnRate:number = 4;
-    @property
-    Dot5SpawnRate:number = 5;
-    @property
-    Dot6SpawnRate:number = 6;
     
+    @property
+    DotSpawnRate:number = 0.25;
 
     @property(Prefab)
-    Dot1Prefab:Prefab = null;
-    @property(Prefab)
-    Dot2Prefab:Prefab = null;
-    @property(Prefab)
-    Dot3Prefab:Prefab = null;
-    @property(Prefab)
-    Dot4Prefab:Prefab = null;
-    @property(Prefab)
-    Dot5Prefab:Prefab = null;
-    @property(Prefab)
-    Dot6Prefab:Prefab = null;
+    DotPrefabs: Prefab[] = [];
 
     @property([Node])
     DotArray:Node[]=[];
+
+    public PlayerNode:Node;
 
     private static instance:EnemyManager = null;
 
     public static getInstance():EnemyManager{
         return this.instance;
+    }
+
+    protected onLoad(): void {
+        this.PlayerNode = find('Player');
+        if (!this.PlayerNode) {
+            console.log('EnemyManager找不到 Player 节点');
+        }
     }
 
     start() {  
@@ -54,59 +39,51 @@ export class EnemyManager extends Component {
         
     }
 
+    /**
+     * 生成敌人
+     *
+     * @returns 无返回值
+     */
     EnemyGenerated(){
-        this.schedule(this.Dot1Spawn,this.Dot1SpawnRate);
-        this.schedule(this.Dot2Spawn,this.Dot2SpawnRate);
-        this.schedule(this.Dot3Spawn,this.Dot3SpawnRate);
-        this.schedule(this.Dot4Spawn,this.Dot4SpawnRate);
-        this.schedule(this.Dot5Spawn,this.Dot5SpawnRate);
-        this.schedule(this.Dot6Spawn,this.Dot6SpawnRate);     
-    }
-
-    onDestroy(): void {
-        this.unschedule(this.Dot1Spawn);
-        this.unschedule(this.Dot2Spawn);
-        this.unschedule(this.Dot3Spawn);
-        this.unschedule(this.Dot4Spawn);
-        this.unschedule(this.Dot5Spawn);
-        this.unschedule(this.Dot6Spawn);
-
-     /*   for(let d of this.DotArray) {
-            const dot = d.getComponent(Dot);
-             dot.DotClear();
-          }   
-     */ 
-    }
-
-    Dot1Spawn(){
-        this.DotSpawn(this.Dot1Prefab)
-    }
-    Dot2Spawn(){
-        this.DotSpawn(this.Dot2Prefab)
-    }
-    Dot3Spawn(){
-        this.DotSpawn(this.Dot3Prefab)
-    }
-    Dot4Spawn(){
-        this.DotSpawn(this.Dot4Prefab)
-    }
-    Dot5Spawn(){
-        this.DotSpawn(this.Dot5Prefab)
-    }
-    Dot6Spawn(){
-        this.DotSpawn(this.Dot6Prefab)
+        this.schedule(() => {
+            const randomDotIndex = math.randomRangeInt(0, this.DotPrefabs.length);
+            this.spawnDot(this.DotPrefabs[randomDotIndex]);
+        }, this.DotSpawnRate); // 每0.3秒生成一个随机敌人
     }
   
-    DotSpawn(Dotprefab:Prefab):Node{
-        const Dot = instantiate(Dotprefab);
-        this.node.addChild(Dot);
-        const randomX = math.randomRangeInt(-545,545);
-        const randomY = math.randomRangeInt(-880,880);
-        Dot.setPosition(randomX,randomY,0);
-        this.DotArray.push(Dot);
-        return Dot;
+    /**
+     * 生成一个点并将其添加到场景中
+     *
+     * @param dotPrefab 点预制体
+     * @returns 返回生成的点节点
+     */
+    spawnDot(dotPrefab: Prefab): Node {
+        
+        const dotNode = instantiate(dotPrefab);
+        this.node.addChild(dotNode);
+        const randomPosition = this.getRandomPosition();
+        dotNode.setPosition(randomPosition.x, randomPosition.y, 0);
+        this.DotArray.push(dotNode);
+        return dotNode;
     }
+    
+    /**
+     * 获取一个随机位置
+     *
+     * @returns 随机位置的 Vec2 对象
+     */
+    getRandomPosition(): Vec2 {
+        const randomX = math.randomRangeInt(-545, 545);
+        const randomY = math.randomRangeInt(-880, 880);
+        return new Vec2(randomX, randomY);
+    }
+    
 
+    /**
+     * 从点数组中移除指定的节点
+     *
+     * @param n 要移除的节点
+     */
     removeDot(n:Node) {
         const index = this.DotArray.indexOf(n);
         if(index!==-1) {
@@ -114,11 +91,14 @@ export class EnemyManager extends Component {
         }
     }
 
-    ongetEatingMan(){
-        for(let d of this.DotArray) {
-            const dot = d.getComponent(Dot);
-            dot.EatingMan();
-        }
+    stopEnemyGenerated(){
+        this.unscheduleAllCallbacks();
+    }
+
+    
+
+    onDestroy(): void {
+        this.unscheduleAllCallbacks();  
     }
 }
 

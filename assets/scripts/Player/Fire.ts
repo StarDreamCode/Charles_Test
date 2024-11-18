@@ -17,14 +17,17 @@ export class Fire extends Component {
     }
 
     FireClear() {
-        this.scheduleOnce(function(){   
-            this.node.destroy();
-          },0.2);
+        if(this.node){
+            this.scheduleOnce(() => {   
+                this.node.destroy();
+            }, 0.2);       
+        }
     }
 
     update(deltaTime: number) {
         
     }
+    protected onDestroy(): void {
+        this.PlayerNode.off('Dead',this.FireClear,this);
+    }
 }
-
-

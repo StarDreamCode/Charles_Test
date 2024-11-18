@@ -3,6 +3,7 @@ import { GameState, ItemType } from '../Enum/Index';
 import { Item } from '../Item/Item';
 import { Reward } from '../Item/Reward';
 import { EnemyManager } from '../Enemy/EnemyManager';
+import { StartManager } from '../Scene/StartManager';
 const { ccclass, property } = _decorator;
 
 
@@ -22,7 +23,7 @@ export class PlayerController extends Component {
     Emotion_Woops_Audio:AudioSource = null;
 
     @property
-    PlayerSpeed:number = 0.5;
+    PlayerSpeed:number = 2;
 
     @property(Node)
     Machinegun:Node;
@@ -42,13 +43,30 @@ export class PlayerController extends Component {
     @property(Prefab)
     SpiderWeb:Prefab = null;
 
+    @property(Prefab)
+    FlyingSaw:Prefab = null;
+
+    @property(Prefab)
+    Bomb:Prefab = null;
+
+    @property(Prefab)
+    Shield:Prefab = null;
+
+    @property(Prefab)
+    EatingMan:Prefab = null;
+
     @property(Node)
     Item_info:Node = null;
 
-    
-    
+    @property
+    CoinValue:number = 100;
+
+    targetAngle:number = 0;
 
     public _canControl:boolean = true;
+
+    private canMove:boolean = true;
+    private canRotate:boolean = true;
 
     private static instance:PlayerController;
 
@@ -63,68 +81,65 @@ export class PlayerController extends Component {
     }
 
     
-    onTouchMove(event:EventTouch){
+    public onTouchMove(event:EventTouch){
 
         const p = this.node.position;
         
         let targetposion = new Vec3(p.x+event.getDeltaX()*this.PlayerSpeed,p.y+event.getDeltaY()*this.PlayerSpeed,p.z);
 
-        let radian = Math.atan2(targetposion.y-p.y,targetposion.x-p.x);
-
-        let angle = radian*180/(Math.PI);
-        
-        // this.node.angle = angle-90;
-
-        this.node.angle = (rotateToDirection(this.node.angle,angle-90,10,1));
-      
-        if(targetposion.x<-40||targetposion.x>40||targetposion.y<-40||targetposion.y>40){
-            this.node.emit('out_of_range',event) 
-        }
-        if(targetposion.x<-550){
-            targetposion.x=-550
-        }
-        if(targetposion.x>550){
-            targetposion.x=550
-        }
-        if(targetposion.y<-877){
-            targetposion.y=-877
-        }
-        if(targetposion.y>877){
-            targetposion.y=877
-        }  
-        this.node.setPosition(targetposion)
-
-        function rotateToDirection (angle1: number, angle2: number, speed: number,dt: number) {
-            //计算角度差值，确保差值在-π到π之间
-            let diff = angle2 - angle1;
-            const pi = Math.PI;
-            const angelIndegrees = misc.radiansToDegrees(pi);
-            while (diff > angelIndegrees) {
-                diff -= 2 * angelIndegrees;
-            }
-            while (diff < -angelIndegrees) {
-                diff += 2 * angelIndegrees;
-            }
-            //根据速度和时间步长计算本次旋转的角度增量
-            let rotation = speed * dt;
-
-            //如果增量会导致超过目标角度，就直接设置为目标角度
-            if (Math.abs(diff) < Math.abs(rotation)) {
-                return angle2;
-            }
-            //根据角度差量的正负来确定旋转方向
-            if (diff > 0) {
-                angle1 += rotation;
-            } else {
-                angle1 -= rotation;
-            }
-                return angle1;
+        if (this.canRotate) {
+            let radian = Math.atan2(targetposion.y - p.y, targetposion.x - p.x);
+            this.targetAngle = radian * (180 / Math.PI);
+            this.node.angle = this.rotateToDirection(this.node.angle, this.targetAngle - 90, 10, 1);
         }
         
+        if (this.canMove) {
+            if (targetposion.x < -40 || targetposion.x > 40 || targetposion.y < -40 || targetposion.y > 40) {
+                this.node.emit('out_of_range', event);
+            }
+            if (targetposion.x < -550) {
+                targetposion.x = -550;
+            }
+            if (targetposion.x > 550) {
+                targetposion.x = 550;
+            }
+            if (targetposion.y < -877) {
+                targetposion.y = -877;
+            }
+            if (targetposion.y > 877) {
+                targetposion.y = 877;
+            }
+            this.node.setPosition(targetposion);
+        }
         
     }
 
-    
+    protected  rotateToDirection (angle1: number, angle2: number, speed: number,dt: number) {
+        //计算角度差值，确保差值在-π到π之间
+        let diff = angle2 - angle1;
+        const pi = Math.PI;
+        const angelIndegrees = misc.radiansToDegrees(pi);
+        while (diff > angelIndegrees) {
+            diff -= 2 * angelIndegrees;
+        }
+        while (diff < -angelIndegrees) {
+            diff += 2 * angelIndegrees;
+        }
+        //根据速度和时间步长计算本次旋转的角度增量
+        let rotation = speed * dt;
+
+        //如果增量会导致超过目标角度，就直接设置为目标角度
+        if (Math.abs(diff) < Math.abs(rotation)) {
+            return angle2;
+        }
+        //根据角度差量的正负来确定旋转方向
+        if (diff > 0) {
+            angle1 += rotation;
+        } else {
+            angle1 -= rotation;
+        }
+            return angle1;
+    }
 
      
     start() {
@@ -134,6 +149,8 @@ export class PlayerController extends Component {
             collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
             collider.on(Contact2DType.PRE_SOLVE, this.onPreSolve, this);
           }
+        this.canMove = true;
+        this.canRotate = true;
           
 
     }
@@ -202,10 +219,12 @@ export class PlayerController extends Component {
     getBlueEnergy(){
        // this.node.getComponent(Animation).play('BlueEnergy');
         console.log("getBlueEnergy");
-        this.scheduleOnce(this.BlueEnergySpawn,0.1);
+        this.scheduleOnce(this.BlueEnergySpawn,1);
     }
     getBomb(){
         console.log("getBomb");
+        this.scheduleOnce(this.BombSpawn,0.1);
+
     }
     getRedEnergy(){
         console.log("getRedEneygy");
@@ -213,6 +232,7 @@ export class PlayerController extends Component {
     }
     getFlyingSaw(){
         console.log("getFlyingSaw");
+        this.scheduleOnce(this.FlyingSawSpawn,0.1);
     }
     getSpiderWeb(){
         console.log("getSpiderWeb");
@@ -220,6 +240,7 @@ export class PlayerController extends Component {
     }
     getShield(){
         console.log("getShield");
+        this.scheduleOnce(this.ShieldSpawn,0.1);
     }
     getWiper(){
         console.log("getWiper");
@@ -227,11 +248,12 @@ export class PlayerController extends Component {
     }
     getTurret(){
         console.log("getTurret");
-        this.Machinegun.active = true;    
+        this.Machinegun.active = true;
     }
     getEatingMan(){
         console.log("getEatingMan");
-        EnemyManager.getInstance().ongetEatingMan();
+        this.scheduleOnce(this.EatingManSpawn,0.1);
+      //  EnemyManager.getInstance().ongetEatingMan();
     }
     getFire(){
         console.log("getFire");
@@ -240,7 +262,8 @@ export class PlayerController extends Component {
 
     }
     getCoin(){
-        console.log("getFire");
+        console.log("getCoin");
+        this.node.emit('get100Coin', this.node);
     }
 
     BlueEnergySpawn(){
@@ -274,6 +297,28 @@ export class PlayerController extends Component {
         SpiderWeb.setWorldPosition(this.node.worldPosition);
     }
 
+    FlyingSawSpawn(){
+        const FlyingSaw = instantiate(this.FlyingSaw);
+        this.node.addChild(FlyingSaw);
+        FlyingSaw.setWorldPosition(this.node.worldPosition);
+    }
+    BombSpawn(){
+        const Bomb = instantiate(this.Bomb);
+        this.Item_info.addChild(Bomb);
+        Bomb.setWorldPosition(this.node.worldPosition);
+    }
+    ShieldSpawn(){
+        const Shield = instantiate(this.Shield);
+        this.node.addChild(Shield);
+        Shield.setWorldPosition(this.node.worldPosition);
+    }
+    EatingManSpawn(){
+        const EatingMan = instantiate(this.EatingMan);
+        this.Item_info.addChild(EatingMan);
+        EatingMan.setWorldPosition(this.node.worldPosition);
+    }
+    
+
 
     onContactToDot(){
         const p = this.node.position;
@@ -281,11 +326,7 @@ export class PlayerController extends Component {
         this.Emotion_Woops.play();
         this.Emotion_Woops_Audio.play();
         this.node.emit('Dead');
-        
-        this.unschedule(this.FireSpawn);
-        this.unschedule(this.WiperSpawn);
-        this.unschedule(this.RedEnergySpawn);
-        this.unschedule(this.BlueEnergySpawn);
+        this.unscheduleAllCallbacks();
         
     }
 
@@ -301,13 +342,13 @@ export class PlayerController extends Component {
     disableControl(){
         console.log('禁止控制');
         this._canControl = false;
-        this.setIsCanControl(this._canControl = false);
+        this.setIsCanControl(this._canControl);
     }
     
     enableControl(){
         console.log('允许控制');
         this._canControl = true;
-        this.setIsCanControl(this._canControl = true);
+        this.setIsCanControl(this._canControl);
     }
 
     public setIsCanControl(_canControl:boolean){
@@ -322,13 +363,16 @@ export class PlayerController extends Component {
     
 
     update(deltaTime: number) {
-        
-    
-              
+        if(this.Machinegun.active == true){
+            this.canMove = false;
+        }else{
+            this.canMove = true;
+        }               
     }
 
     protected onDestroy(): void {
         input.off(Input.EventType.TOUCH_MOVE,this.onTouchMove,this)
+        this.node.off('Dead', this.onContactToDot, this);
         let collider = this.getComponent(Collider2D);
         if (collider) {
             collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
