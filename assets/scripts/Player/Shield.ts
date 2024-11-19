@@ -49,21 +49,21 @@ export class Shield extends Component {
      /**
       * 生成炸弹
       */
-     BombSpawn() {
+    BombSpawn() {
         if(this.ShieldBomb && this.item_info){
-        const Bomb = instantiate(this.ShieldBomb);
-        if (Bomb) {
-            this.item_info.addChild(Bomb);
+            var Bomb = instantiate(this.ShieldBomb);
+            if (Bomb) {
+                this.item_info.addChild(Bomb);
             Bomb.setWorldPosition(this.node.worldPosition);
             this.scheduleOnce(() => {
                 this.node.destroy();
-            }, 0.5);
+            }, 1);
             }
         } else {
             console.error("Failed to instantiate ShieldBomb or item_info is not set.");
         }
-        
-     }
+
+    }
 
     update(deltaTime: number) {
         

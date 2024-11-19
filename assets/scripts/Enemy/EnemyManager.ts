@@ -25,7 +25,7 @@ export class EnemyManager extends Component {
     }
 
     protected onLoad(): void {
-        this.PlayerNode = find('Player');
+        this.PlayerNode = find('Canvas/Bg/Player');
         if (!this.PlayerNode) {
             console.log('EnemyManager找不到 Player 节点');
         }
@@ -58,11 +58,24 @@ export class EnemyManager extends Component {
      * @returns 返回生成的点节点
      */
     spawnDot(dotPrefab: Prefab): Node {
+        if (!this.PlayerNode) {
+            console.error('PlayerNode 未初始化，无法生成 Dot');
+            return null;
+        }
         
         const dotNode = instantiate(dotPrefab);
-        this.node.addChild(dotNode);
-        const randomPosition = this.getRandomPosition();
+        let randomPosition;
+        let distanceToPlayer;
+        do{
+            randomPosition = this.getRandomPosition();
+            if (!(randomPosition instanceof Vec2)) {
+                console.error('randomPosition 不是 Vec2 类型');
+                return null;
+            }
+            distanceToPlayer = Vec2.distance(randomPosition, new Vec2(this.PlayerNode.getPosition().x, this.PlayerNode.getPosition().y));
+        }while(distanceToPlayer<100);
         dotNode.setPosition(randomPosition.x, randomPosition.y, 0);
+        this.node.addChild(dotNode);
         this.DotArray.push(dotNode);
         return dotNode;
     }

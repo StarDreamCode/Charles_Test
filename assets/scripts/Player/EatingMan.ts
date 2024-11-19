@@ -1,5 +1,5 @@
 // EatingMan.ts
-import { _decorator, Component, Node, Vec2, find } from 'cc';
+import { _decorator, Component, Node, Vec2, find, PhysicsSystem, Vec3, physics, PhysicsSystem2D } from 'cc';
 import { EnemyManager } from '../Enemy/EnemyManager';
 const { ccclass, property } = _decorator;
 
@@ -11,7 +11,7 @@ export class EatingMan extends Component {
 
     private enemyManager: EnemyManager | null = null;
 
-    public PlayerNode:Node;
+    public PlayerNode: Node;
 
     onLoad() {
         // 在onLoad中查找EnemyManager实例
@@ -19,24 +19,24 @@ export class EatingMan extends Component {
         const enemyManagerNodePath = 'Canvas/Bg/EnemyManager'; // 将路径提取为变量，便于管理和修改
         this.enemyManager = find(enemyManagerNodePath).getComponent(EnemyManager);
         if (!this.enemyManager) {
-        console.error('EnemyManager not found!');
-        return;
+            console.error('EnemyManager not found!');
+            return;
         }
     }
 
     protected start(): void {
-        this.PlayerNode.once('Dead',this.eatingManClear,this);
+        this.PlayerNode.once('Dead', this.eatingManClear, this);
         this.scheduleOnce(() => {
             this.node.destroy();
         }, 5);
     }
 
     eatingManClear() {
-        if(this.node){
-            this.scheduleOnce(function(){   
+        if (this.node) {
+            this.scheduleOnce(function () {
                 this.node.destroy();
-              },0.2);
-        }else{
+            }, 0.2);
+        } else {
             console.log("eatingmanObject is null");
         }
 
@@ -48,14 +48,14 @@ export class EatingMan extends Component {
             return;
         }
 
-        let myPos = this.node.position;
+        const myPos = this.node.position;
         let closestDot: Node | null = null;
         let closestDistance = Infinity;
 
         // 遍历EnemyManager中的dots数组，找到最近的Dot
         this.enemyManager.DotArray.forEach((dot) => {
-            let dotPos = dot.position;
-            let distance = Vec2.distance(myPos, dotPos);
+            const dotPos = dot.position;
+            const distance = Vec2.distance(myPos, dotPos);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestDot = dot;
@@ -64,11 +64,12 @@ export class EatingMan extends Component {
 
         // 如果有最近的Dot，则向它移动并朝向它
         if (closestDot) {
-            let dotPos = closestDot.position;
-            let direction = dotPos.subtract(myPos).normalize();
-            let angle = Math.atan2(direction.y, direction.x) * (180 / Math.PI);
-            this.node.angle = angle-90;
+            const dotPos = closestDot.getPosition();
+            const direction = dotPos.subtract(myPos).normalize();
+            const angle = Math.atan2(direction.y, direction.x) * (180 / Math.PI)-90;
+            this.node.angle = angle;
             this.node.position = myPos.add(direction.multiplyScalar(deltaTime * this.Speed));
         }
+        
     }
 }

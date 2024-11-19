@@ -114,8 +114,8 @@ export class StartManager extends Component {
         this.PlayerController.enableControl();
     }
     onHomeButtonClick(){
-        this.setCurState(GameState.GS_START);
-        this.EnemyManager.onDestroy();
+        
+        
     }
     onRestartButtionClick(){
         this.EndUI.node.active = false;
@@ -159,6 +159,7 @@ export class StartManager extends Component {
             
             
             
+            
         }else if(value==GameState.GS_END){
             this.GameOverSum();
             this.GuiEnd.play();
@@ -170,6 +171,7 @@ export class StartManager extends Component {
             const BodyNode = this.PlayerController.node.getChildByName('Body');
             BodyNode.getComponent(Sprite).node.active = false;           
             this.PlayerController.disableControl();
+            this.Coin = 0;
 
         }
         
@@ -216,11 +218,7 @@ export class StartManager extends Component {
 
     GameOverSum(){
         let hScore = localStorage.getItem("HighestScore");
-        let hScoreInt = 0 ;
-
-        if(hScore!==null) {
-            hScoreInt = parseInt(hScore || "0",10);  //读取数据 10进制
-        }
+        let hScoreInt = parseInt(hScore || "0", 10);// 读取数据，如果没有则默认为0
         
         if(this.Timer>hScoreInt) {
             localStorage.setItem("HighestScore",this.Timer.toString());//存储数据
@@ -229,17 +227,14 @@ export class StartManager extends Component {
 
         
         let TotalCoin = localStorage.getItem("TotalCoin");
-        let TotalCoinInt = 0 ;
-
-        if(TotalCoin==null) {
-            TotalCoinInt = parseInt(TotalCoin || "0",10);  //读取数据 10进制
-        }
+        let TotalCoinInt = parseInt(TotalCoin || "0", 10);// 读取数据，如果没有则默认为0
         
         TotalCoinInt += this.Coin;
         localStorage.setItem("TotalCoin",TotalCoinInt.toString());//存储数据
         
 
         this.EndUI.ShowGameOverUI(hScoreInt,this.Timer,TotalCoinInt);
+        
     }
     
     update(deltaTime: number) {
