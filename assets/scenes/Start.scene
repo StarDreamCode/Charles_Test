@@ -357,7 +357,7 @@
     "Emotion_Woops_Audio": {
       "__id__": 318
     },
-    "PlayerSpeed": 1,
+    "PlayerSpeed": 2,
     "Machinegun": {
       "__uuid__": "2378393f-0764-4d26-8f8c-546647128256",
       "__expectedType__": "cc.Prefab"
