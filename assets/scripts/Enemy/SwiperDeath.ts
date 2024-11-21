@@ -4,9 +4,9 @@ const { ccclass, property } = _decorator;
 
 @ccclass('SwiperDeath')
 export class SwiperDeath extends Component {
-    
+
     @property([SpriteFrame])
-    sprites:SpriteFrame[] = new Array<SpriteFrame>;
+    sprites: SpriteFrame[] = new Array<SpriteFrame>;
 
     onLoad() {
         let sp_idx = math.randomRangeInt(0, this.sprites.length);

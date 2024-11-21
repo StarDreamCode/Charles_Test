@@ -6,21 +6,24 @@ const { ccclass, property } = _decorator;
 
 @ccclass('EnemyManager')
 export class EnemyManager extends Component {
-    
+
     @property
-    DotSpawnRate:number = 0.25;
+    DotSpawnRate: number = 0.25;
 
     @property(Prefab)
     DotPrefabs: Prefab[] = [];
 
     @property([Node])
-    DotArray:Node[]=[];
+    DotArray: Node[] = [];
 
-    public PlayerNode:Node;
+    @property(Prefab)
+    Caution: Prefab = null;
 
-    private static instance:EnemyManager = null;
+    public PlayerNode: Node;
 
-    public static getInstance():EnemyManager{
+    private static instance: EnemyManager = null;
+
+    public static getInstance(): EnemyManager {
         return this.instance;
     }
 
@@ -31,12 +34,12 @@ export class EnemyManager extends Component {
         }
     }
 
-    start() {  
+    start() {
         EnemyManager.instance = this;
     }
 
     update(deltaTime: number) {
-        
+
     }
 
     /**
@@ -44,13 +47,22 @@ export class EnemyManager extends Component {
      *
      * @returns 无返回值
      */
-    EnemyGenerated(){
+    EnemyGenerated() {
         this.schedule(() => {
             const randomDotIndex = math.randomRangeInt(0, this.DotPrefabs.length);
             this.spawnDot(this.DotPrefabs[randomDotIndex]);
         }, this.DotSpawnRate); // 每0.3秒生成一个随机敌人
+
+        const randomIndex = math.randomRangeInt(30, 41);
+
+        this.schedule(() => {
+            const cautionNode = instantiate(this.Caution);
+            cautionNode.setPosition(0, 0, 0);
+            this.node.addChild(cautionNode);
+        }, 30, randomIndex, 5);
     }
-  
+
+
     /**
      * 生成一个点并将其添加到场景中
      *
@@ -62,24 +74,24 @@ export class EnemyManager extends Component {
             console.error('PlayerNode 未初始化，无法生成 Dot');
             return null;
         }
-        
+
         const dotNode = instantiate(dotPrefab);
         let randomPosition;
         let distanceToPlayer;
-        do{
+        do {
             randomPosition = this.getRandomPosition();
             if (!(randomPosition instanceof Vec2)) {
                 console.error('randomPosition 不是 Vec2 类型');
                 return null;
             }
             distanceToPlayer = Vec2.distance(randomPosition, new Vec2(this.PlayerNode.getPosition().x, this.PlayerNode.getPosition().y));
-        }while(distanceToPlayer<100);
+        } while (distanceToPlayer < 100);
         dotNode.setPosition(randomPosition.x, randomPosition.y, 0);
         this.node.addChild(dotNode);
         this.DotArray.push(dotNode);
         return dotNode;
     }
-    
+
     /**
      * 获取一个随机位置
      *
@@ -90,28 +102,28 @@ export class EnemyManager extends Component {
         const randomY = math.randomRangeInt(-880, 880);
         return new Vec2(randomX, randomY);
     }
-    
+
 
     /**
      * 从点数组中移除指定的节点
      *
      * @param n 要移除的节点
      */
-    removeDot(n:Node) {
+    removeDot(n: Node) {
         const index = this.DotArray.indexOf(n);
-        if(index!==-1) {
-            this.DotArray.splice(index,1);
+        if (index !== -1) {
+            this.DotArray.splice(index, 1);
         }
     }
 
-    stopEnemyGenerated(){
+    stopEnemyGenerated() {
         this.unscheduleAllCallbacks();
     }
 
-    
+
 
     onDestroy(): void {
-        this.unscheduleAllCallbacks();  
+        this.unscheduleAllCallbacks();
     }
 }
 

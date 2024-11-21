@@ -3,13 +3,13 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ShieldBomb')
 export class ShieldBomb extends Component {
-    
+
     public PlayerNode: Node;
 
     private isDestroyed: boolean = false; // 添加标志位，防止重复销毁
 
     protected onLoad() {
-        this.PlayerNode = find("Canvas/Bg/Player")as Node;
+        this.PlayerNode = find("Canvas/Bg/Player") as Node;
         if (!this.PlayerNode) {
             console.error("Failed to find PlayerNode.");
         }
@@ -21,7 +21,7 @@ export class ShieldBomb extends Component {
                 this.isDestroyed = true; // 更新标志位
             }
         }, 3);
-        
+
         if (this.PlayerNode) {
             this.PlayerNode.once('Dead', this.ShieldBombClear, this);
         } else {
@@ -30,14 +30,14 @@ export class ShieldBomb extends Component {
     }
 
     ShieldBombClear() {
-            this.scheduleOnce(() => {
-                this.node.destroy();
-            }, 0.2);
-        
+        this.scheduleOnce(() => {
+            this.node.destroy();
+        }, 0.2);
+
     }
-    
+
     update(deltaTime: number) {
-          
+
     }
     protected onDestroy(): void {
         if (this.PlayerNode) {

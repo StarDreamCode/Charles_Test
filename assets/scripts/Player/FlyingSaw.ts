@@ -3,31 +3,31 @@ const { ccclass, property } = _decorator;
 
 @ccclass('FlyingSaw')
 export class FlyingSaw extends Component {
-    public PlayerNode:Node;
+    public PlayerNode: Node;
     protected onLoad(): void {
-        this.PlayerNode = find("Canvas/Bg/Player"); 
+        this.PlayerNode = find("Canvas/Bg/Player");
     }
     start() {
-        this.scheduleOnce(() => {   
+        this.scheduleOnce(() => {
             this.node.destroy();
-        }, 3);       
-        this.PlayerNode.once('Dead',this.FlyingSawClear,this);
+        }, 3);
+        this.PlayerNode.once('Dead', this.FlyingSawClear, this);
     }
 
-    FlyingSawClear(){
-        if(this.node){
-            this.scheduleOnce(() => {   
+    FlyingSawClear() {
+        if (this.node) {
+            this.scheduleOnce(() => {
                 this.node.destroy();
-            }, 0.2);       
+            }, 0.2);
         }
     }
 
     update(deltaTime: number) {
-        
+
     }
 
     protected onDestroy(): void {
-        this.PlayerNode.off('Dead',this.FlyingSawClear,this);
+        this.PlayerNode.off('Dead', this.FlyingSawClear, this);
     }
 }
 

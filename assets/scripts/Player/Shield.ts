@@ -5,14 +5,14 @@ const { ccclass, property } = _decorator;
 export class Shield extends Component {
 
     @property(Prefab)
-    ShieldBomb:Prefab = null;
+    ShieldBomb: Prefab = null;
 
     public item_info: Node;
 
     private isBombSpawned = false;
 
     protected onLoad(): void {
-        this.item_info=find("Canvas/Bg/Item_Info");  
+        this.item_info = find("Canvas/Bg/Item_Info");
         if (!this.item_info) {
             console.error("Failed to find item_info node.");
         }
@@ -29,7 +29,7 @@ export class Shield extends Component {
         } else {
             console.error("Failed to get Collider2D component on Shield.");
         }
-        
+
     }
 
     /**
@@ -44,20 +44,20 @@ export class Shield extends Component {
             this.BombSpawn();
             this.isBombSpawned = true; // 设置标志为true
         }
-     }
+    }
 
-     /**
-      * 生成炸弹
-      */
+    /**
+     * 生成炸弹
+     */
     BombSpawn() {
-        if(this.ShieldBomb && this.item_info){
+        if (this.ShieldBomb && this.item_info) {
             var Bomb = instantiate(this.ShieldBomb);
             if (Bomb) {
                 this.item_info.addChild(Bomb);
-            Bomb.setWorldPosition(this.node.worldPosition);
-            this.scheduleOnce(() => {
-                this.node.destroy();
-            }, 1);
+                Bomb.setWorldPosition(this.node.worldPosition);
+                this.scheduleOnce(() => {
+                    this.node.destroy();
+                }, 1);
             }
         } else {
             console.error("Failed to instantiate ShieldBomb or item_info is not set.");
@@ -66,7 +66,7 @@ export class Shield extends Component {
     }
 
     update(deltaTime: number) {
-        
+
     }
     /**
      * 销毁对象时调用的方法

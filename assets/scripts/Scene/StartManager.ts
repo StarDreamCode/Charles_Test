@@ -1,4 +1,4 @@
-import { _decorator, Animation, AudioSource, Component,  director,  Event,  game,  Game,  input,  Input,  instantiate,  Label,  math,  Node, Prefab, Sprite, Touch } from 'cc';
+import { _decorator, Animation, AudioSource, Component, director, Event, game, Game, input, Input, instantiate, Label, math, Node, Prefab, Sprite, Touch, tween } from 'cc';
 import { PlayerController } from '../Player/PlayerController';
 import { GameState } from '../Enum/Index';
 import { EnemyManager } from '../Enemy/EnemyManager';
@@ -11,201 +11,207 @@ const { ccclass, property } = _decorator;
 
 @ccclass('StartManager')
 export class StartManager extends Component {
-  
+
 
     @property(PlayerController)
-    public PlayerController:PlayerController = null;
+    public PlayerController: PlayerController = null;
 
     @property(EnemyManager)
-    public EnemyManager:EnemyManager = null;
+    public EnemyManager: EnemyManager = null;
 
     @property(Item)
-    public Item:Item = null;
+    public Item: Item = null;
 
     @property(AudioSource)
-    public BGM:AudioSource = null;
+    public BGM: AudioSource = null;
 
     @property(Node)
-    public GUI:Node = null;
+    public GUI: Node = null;
 
     @property(Animation)
-    public BgAnime:Animation = null;
+    public BgAnime: Animation = null;
 
     @property(Animation)
-    public BgAnimeback:Animation = null;
+    public BgAnimeback: Animation = null;
 
     @property(Animation)
-    public GuiEnd:Animation = null;
+    public GuiEnd: Animation = null;
 
     @property(Node)
-    public Shop:Node = null;
+    public Shop: Node = null;
 
     @property(Node)
-    public PauseMask:Node = null;
+    public PauseMask: Node = null;
 
     @property(Node)
-    public Howto:Node = null;
+    public Howto: Node = null;
 
     @property
-    private Coin:number=0;
+    private Coin: number = 0;
 
     @property(ScoreUI)
-    ScoreUI:ScoreUI= null;
+    ScoreUI: ScoreUI = null;
 
     @property(EndUI)
-    EndUI:EndUI = null;
+    EndUI: EndUI = null;
 
     @property(Label)
-    Time:Label= null;
+    Time: Label = null;
 
-    
+
+
+
     //用于计分
-    private static instance:StartManager;
+    private static instance: StartManager;
 
-    public static getinstance():StartManager{
+    public static getinstance(): StartManager {
         return this.instance;
-    }  
+    }
 
-    public Timer = 0; 
+    public Timer = 0;
 
     private _elapsedTime = 0;
 
-    private _counting:boolean = false;
-    
+    private _counting: boolean = false;
+
 
     protected onLoad(): void {
         StartManager.instance = this;
-    }   
-   
+    }
+
 
     start() {
-        this.setCurState(GameState.GS_START); 
-        this.PlayerController.node.on('get100Coin',this.addScorePlus,this)
+        this.setCurState(GameState.GS_START);
+        this.PlayerController.node.on('get100Coin', this.addScorePlus, this)
     }
-    out_of_range(){
+    out_of_range() {
         this.setCurState(GameState.GS_GAME);
     }
-    Dead(){
+    Dead() {
         this.setCurState(GameState.GS_END);
     }
 
-    onShopButtonClick(){
+    onShopButtonClick() {
         this.Shop.active = true;
-        this.PlayerController.disableControl();      
+        this.PlayerController.disableControl();
     }
-    onShopButtonBackClick(){
+    onShopButtonBackClick() {
         this.Shop.active = false;
-        this.PlayerController.enableControl(); 
+        this.PlayerController.enableControl();
         this.setCurState(GameState.GS_START);
-        
+
     }
 
-    onPauseButtonClick(){
+    onPauseButtonClick() {
         director.pause();
-        this.PauseMask.active=true;
+        this.PauseMask.active = true;
         this.BGM.pause();
         this.PlayerController.disableControl();
-        
+
     }
-    onResumeButtionClick(){ 
+    onResumeButtionClick() {
         director.resume();
-        this.PauseMask.active=false;
+        this.PauseMask.active = false;
         this.BGM.play();
         this.PlayerController.enableControl();
     }
-    onHomeButtonClick(){
-        
-        
+    onHomeButtonClick() {
+
+
     }
-    onRestartButtionClick(){
+    onRestartButtionClick() {
         this.EndUI.node.active = false;
         this.setCurState(GameState.GS_START);
     }
-    onHowtoButtionClick(){
+    onHowtoButtionClick() {
         this.Howto.active = true;
-        
+
     }
 
-    offHowtoButtionClick(){
+    offHowtoButtionClick() {
         this.Howto.active = false;
     }
 
-   
-    setCurState(value:GameState){
-        if(value==GameState.GS_START){
+
+    setCurState(value: GameState) {
+        if (value == GameState.GS_START) {
             this.BgAnimeback.play();
-            this.PlayerController.node.setPosition(0,0,0);
-            this.PlayerController.node.once('out_of_range',this.out_of_range,this);
-            this.GUI.active=false;
+            this.PlayerController.enableControl();
+            this.PlayerController.node.setPosition(0, 0, 0);
+            this.PlayerController.node.once('out_of_range', this.out_of_range, this);
+            this.GUI.active = false;
             this.BGM.stop();
             const BodyNode = this.PlayerController.node.getChildByName('Body');
-            BodyNode.getComponent(Sprite).node.active = true; 
-            this.PlayerController.enableControl();
-            
-            
+            BodyNode.getComponent(Sprite).node.active = true;
 
 
-        }else if(value==GameState.GS_GAME){
+
+
+
+
+        } else if (value == GameState.GS_GAME) {
+            this.BgAnime.play();
             this.startTimer();
-            this.PlayerController.enableControl();     
+            this.PlayerController.enableControl();
             this.EnemyManager.EnemyGenerated();
             this.Item.ItemGenerated();
-            this.GUI.active=true;
-            this.BgAnime.play('BgAnime');
+            this.GUI.active = true;
+
             this.BGM.play();
-            this.PlayerController.node.once('Dead',this.Dead,this);
+            this.PlayerController.node.once('Dead', this.Dead, this);
             this.ScoreUI.updateUI(0);
-            
-            
-            
-            
-            
-        }else if(value==GameState.GS_END){
+
+
+
+
+
+
+        } else if (value == GameState.GS_END) {
             this.GameOverSum();
             this.GuiEnd.play();
-            this.GUI.active=false;
+            this.GUI.active = false;
             this.EnemyManager.stopEnemyGenerated();
             this.Item.stopItemGenerated();
             this.Item.clearItem();
             this.BGM.stop();
             const BodyNode = this.PlayerController.node.getChildByName('Body');
-            BodyNode.getComponent(Sprite).node.active = false;           
+            BodyNode.getComponent(Sprite).node.active = false;
             this.PlayerController.disableControl();
             this.Coin = 0;
 
         }
-        
+
     }
 
-    public addScore (scoreToAdd: number) {
+    public addScore(scoreToAdd: number) {
         this.Coin += scoreToAdd;
-    if (this.ScoreUI) {
-        this.ScoreUI.updateUI(this.Coin);
-    } else {
-        console.error("ScoreUI is not initialized.");
-    }
+        if (this.ScoreUI) {
+            this.ScoreUI.updateUI(this.Coin);
+        } else {
+            console.error("ScoreUI is not initialized.");
+        }
     }
 
-    public addScorePlus () {
+    public addScorePlus() {
         this.Coin += 100;
-    if (this.ScoreUI) {
-        this.ScoreUI.updateUI(this.Coin);
-    } else {
-        console.error("ScoreUI is not initialized.");
-    }
+        if (this.ScoreUI) {
+            this.ScoreUI.updateUI(this.Coin);
+        } else {
+            console.error("ScoreUI is not initialized.");
+        }
     }
 
     startTimer() {
         this._elapsedTime = 0;
         this._counting = true;
-        this.schedule(this.updateTimeUI,1)
+        this.schedule(this.updateTimeUI, 1)
     }
 
     updateTimeUI(dt: number) {
-        if(this._counting){
-            this._elapsedTime += dt ;
+        if (this._counting) {
+            this._elapsedTime += dt;
             this.Timer = Math.floor(this._elapsedTime);
-            this.Time.string =this.Timer.toString();
+            this.Time.string = this.Timer.toString();
         }
     }
 
@@ -216,33 +222,33 @@ export class StartManager extends Component {
         this.unschedule(this.updateTimeUI);
     }
 
-    GameOverSum(){
+    GameOverSum() {
         let hScore = localStorage.getItem("HighestScore");
         let hScoreInt = parseInt(hScore || "0", 10);// 读取数据，如果没有则默认为0
-        
-        if(this.Timer>hScoreInt) {
-            localStorage.setItem("HighestScore",this.Timer.toString());//存储数据
+
+        if (this.Timer > hScoreInt) {
+            localStorage.setItem("HighestScore", this.Timer.toString());//存储数据
         }
 
 
-        
+
         let TotalCoin = localStorage.getItem("TotalCoin");
         let TotalCoinInt = parseInt(TotalCoin || "0", 10);// 读取数据，如果没有则默认为0
-        
-        TotalCoinInt += this.Coin;
-        localStorage.setItem("TotalCoin",TotalCoinInt.toString());//存储数据
-        
 
-        this.EndUI.ShowGameOverUI(hScoreInt,this.Timer,TotalCoinInt);
-        
+        TotalCoinInt += this.Coin;
+        localStorage.setItem("TotalCoin", TotalCoinInt.toString());//存储数据
+
+
+        this.EndUI.ShowGameOverUI(hScoreInt, this.Timer, TotalCoinInt);
+
     }
-    
+
     update(deltaTime: number) {
-        
+
     }
 
     protected onDestroy(): void {
-       this.node.off('get100Coin',this.addScorePlus,this);
+        this.node.off('get100Coin', this.addScorePlus, this);
     }
 }
 

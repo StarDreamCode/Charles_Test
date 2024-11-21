@@ -6,119 +6,119 @@ const { ccclass, property } = _decorator;
 @ccclass('Item')
 export class Item extends Component {
 
-    
-    @property
-    ItemSpawnRate:number = 4;
-
-    @property(Prefab)
-    Item0Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item1Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item2Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item3Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item4Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item5Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item6Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item7Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item8Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item9Prefab:Prefab = null;
-
-    @property(Prefab)
-    Item10Prefab:Prefab = null;
 
     @property
-    ItemMax:number = 4;
+    ItemSpawnRate: number = 4;
+
+    @property(Prefab)
+    Item0Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item1Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item2Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item3Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item4Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item5Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item6Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item7Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item8Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item9Prefab: Prefab = null;
+
+    @property(Prefab)
+    Item10Prefab: Prefab = null;
+
+    @property
+    ItemMax: number = 4;
 
     @property([Node])
-    ItemArray:Node[]=[];
+    ItemArray: Node[] = [];
 
-   // private _item:ItemTyPE[]=[];
-      //  @property
-   //  ItemType:ItemType = null;
+    // private _item:ItemTyPE[]=[];
+    //  @property
+    //  ItemType:ItemType = null;
 
-   private static instance:Item = null;
+    private static instance: Item = null;
 
-   public static getInstance():Item{
-       return this.instance;
-   }
+    public static getInstance(): Item {
+        return this.instance;
+    }
 
     start() {
-        Item.instance = this; 
+        Item.instance = this;
     }
 
     update(deltaTime: number) {
-        
+
     }
 
-    ItemGenerated(){
+    ItemGenerated() {
         //判断预制体数量是否小于4个再进行生成
         let count = this.ItemArray.length;
-        if(count > this.ItemMax) {
+        if (count > this.ItemMax) {
             this.unschedule(this.ItemSystemSpawn);
-        }else {
-            this.schedule(this.ItemSystemSpawn,this.ItemSpawnRate);
+        } else {
+            this.schedule(this.ItemSystemSpawn, this.ItemSpawnRate);
         }
     }
 
-    ItemSystemSpawn(){
-        const randomNumber = math.randomRangeInt(0,10);
+    ItemSystemSpawn() {
+        const randomNumber = math.randomRangeInt(0, 10);
         let Prefab = null;
-        if (randomNumber==0){
+        if (randomNumber == 0) {
             Prefab = this.Item0Prefab
-        }else if(randomNumber==1){
+        } else if (randomNumber == 1) {
             Prefab = this.Item1Prefab
-        }else if(randomNumber==2){
+        } else if (randomNumber == 2) {
             Prefab = this.Item2Prefab
-        }else if(randomNumber==3){
+        } else if (randomNumber == 3) {
             Prefab = this.Item3Prefab
-        }else if(randomNumber==4){
+        } else if (randomNumber == 4) {
             Prefab = this.Item4Prefab
-        }else if(randomNumber==5){
+        } else if (randomNumber == 5) {
             Prefab = this.Item5Prefab
-        }else if(randomNumber==6){
+        } else if (randomNumber == 6) {
             Prefab = this.Item6Prefab
-        }else if(randomNumber==7){
+        } else if (randomNumber == 7) {
             Prefab = this.Item7Prefab
-        }else if(randomNumber==8){
+        } else if (randomNumber == 8) {
             Prefab = this.Item8Prefab
-        }else if(randomNumber==9){
+        } else if (randomNumber == 9) {
             Prefab = this.Item9Prefab
-        }else if(randomNumber==10){
+        } else if (randomNumber == 10) {
             Prefab = this.Item10Prefab
         }
         this.ItemSpawn(Prefab);
     }
-    
+
     /**
      * 根据给定的预制件生成一个物品节点，并将其添加到当前节点的子节点列表中。
      *
      * @param Itemprefab 预制件 - 要生成的物品预制件。
      * @returns 返回生成的物品节点。
      */
-    ItemSpawn(Itemprefab:Prefab):Node{
-       // this._item.push( math.randomRangeInt(0,10))
+    ItemSpawn(Itemprefab: Prefab): Node {
+        // this._item.push( math.randomRangeInt(0,10))
         const Item = instantiate(Itemprefab);
         this.node.addChild(Item);
-        const randomX = math.randomRangeInt(-545,545);
-        const randomY = math.randomRangeInt(-880,880);
-        Item.setPosition(randomX,randomY,0);
+        const randomX = math.randomRangeInt(-545, 545);
+        const randomY = math.randomRangeInt(-880, 880);
+        Item.setPosition(randomX, randomY, 0);
         this.ItemArray.push(Item);
         return Item;
 
@@ -129,18 +129,18 @@ export class Item extends Component {
      *
      * @param n 要移除的节点
      */
-    removeItem(n:Node) {
+    removeItem(n: Node) {
         const index = this.ItemArray.indexOf(n);
-        if(index!==-1) {
-            this.ItemArray.splice(index,1);
+        if (index !== -1) {
+            this.ItemArray.splice(index, 1);
         }
     }
 
     clearItem() {
-        for(let r of this.ItemArray) {
+        for (let r of this.ItemArray) {
             const reward = r.getComponent(Reward);
             reward.RewardClear();
-        }   
+        }
     }
 
     stopItemGenerated() {

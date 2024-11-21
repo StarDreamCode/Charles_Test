@@ -66,10 +66,10 @@ export class EatingMan extends Component {
         if (closestDot) {
             const dotPos = closestDot.getPosition();
             const direction = dotPos.subtract(myPos).normalize();
-            const angle = Math.atan2(direction.y, direction.x) * (180 / Math.PI)-90;
+            const angle = Math.atan2(direction.y, direction.x) * (180 / Math.PI) - 90;
             this.node.angle = angle;
             this.node.position = myPos.add(direction.multiplyScalar(deltaTime * this.Speed));
         }
-        
+
     }
 }

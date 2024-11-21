@@ -5,14 +5,14 @@ const { ccclass, property } = _decorator;
 export class RedEnergy extends Component {
     start() {
 
-        this.scheduleOnce(function(){   
+        this.scheduleOnce(function () {
             this.node.destroy();
-          },4);
+        }, 4);
     }
 
 
     update(deltaTime: number) {
-        
+
     }
 }
 

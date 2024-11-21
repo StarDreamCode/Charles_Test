@@ -8,7 +8,7 @@ export class Index extends Component {
     }
 
     update(deltaTime: number) {
-        
+
     }
 }
 
@@ -19,7 +19,7 @@ export enum GameState {
     GS_END
 }
 
-export enum DotType{
+export enum DotType {
     Dot_1,
     Dot_2,
     Dot_3,
@@ -28,8 +28,8 @@ export enum DotType{
     Dot_6,
 
 }
-export enum ItemType{
-    
+export enum ItemType {
+
     BlueEnergy,
     Bomb,
     RedEnergy,
