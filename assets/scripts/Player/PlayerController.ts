@@ -172,30 +172,31 @@ export class PlayerController extends Component {
     }
 
     protected MachinegunRotate(angle1: number, angle2: number, speed: number, dt: number) {
-          //计算角度差值，确保差值在-π到π之间
-          let diff = angle2 - angle1;
-          const pi = Math.PI;
-          const angelIndegrees = misc.radiansToDegrees(pi);
-          while (diff > angelIndegrees) {
-              diff -= 2 * angelIndegrees;
-          }
-          while (diff < -angelIndegrees) {
-              diff += 2 * angelIndegrees;
-          }
-          //根据速度和时间步长计算本次旋转的角度增量
-          let rotation = speed * dt;
-  
-          //如果增量会导致超过目标角度，就直接设置为目标角度
-          if (Math.abs(diff) < Math.abs(rotation)) {
-              return angle2;
-          }
-          //根据角度差量的正负来确定旋转方向
-          if (diff > 0) {
-              angle1 += rotation;
-          } else {
-              angle1 -= rotation;
-          }
-          return angle1;
+        //计算角度差值，确保差值在-π到π之间
+        let diff = angle2 - angle1;
+        const pi = Math.PI;
+        const angelIndegrees = misc.radiansToDegrees(pi);
+        while (diff > angelIndegrees) {
+            diff -= 2 * angelIndegrees;
+        }
+        while (diff < -angelIndegrees) {
+            diff += 2 * angelIndegrees;
+        }
+        //根据速度和时间步长计算本次旋转的角度增量
+        let rotation = speed * dt;
+
+        //如果增量会导致超过目标角度，就直接设置为目标角度
+        if (Math.abs(diff) < Math.abs(rotation)) {
+            return angle2;
+        }
+        //根据角度差量的正负来确定旋转方向
+        if (diff > 0) {
+            angle1 += rotation;
+        } else {
+            angle1 -= rotation;
+        }
+
+        return angle1;
     }
 
 
