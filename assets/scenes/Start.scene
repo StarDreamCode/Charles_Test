@@ -14304,50 +14304,52 @@
     "_enabled": true,
     "__prefab": null,
     "ItemSpawnRate": 4,
-    "Item0Prefab": {
-      "__uuid__": "c4950152-a5c2-414c-8773-497b3de1b2e7",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item1Prefab": {
-      "__uuid__": "4f5e15f1-6bfc-4fc1-96f8-4c502d724c08",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item2Prefab": {
-      "__uuid__": "cd4ea96c-7bd5-4379-9785-f82efd5232ce",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item3Prefab": {
-      "__uuid__": "96910ee1-6046-4992-8273-1be47df40261",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item4Prefab": {
-      "__uuid__": "13736a4d-7eec-4179-8415-ac4a51295df8",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item5Prefab": {
-      "__uuid__": "14ea884a-bed2-40b0-8cfc-f3c8f93a4e8d",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item6Prefab": {
-      "__uuid__": "20205cef-862d-4e34-8cb4-455609c2daa3",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item7Prefab": {
-      "__uuid__": "dbea0713-7773-4c5f-aa98-03d5c1106360",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item8Prefab": {
-      "__uuid__": "0debd736-fc21-42c4-a2fd-c9636459ca50",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item9Prefab": {
-      "__uuid__": "7d4842b1-5d2c-4e7a-9fa9-d05dc14b3bcf",
-      "__expectedType__": "cc.Prefab"
-    },
-    "Item10Prefab": {
-      "__uuid__": "b889c09b-6da5-4117-8ccb-7c0ab3dcde4b",
-      "__expectedType__": "cc.Prefab"
-    },
+    "ItemPrefabs": [
+      {
+        "__uuid__": "c4950152-a5c2-414c-8773-497b3de1b2e7",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "4f5e15f1-6bfc-4fc1-96f8-4c502d724c08",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "cd4ea96c-7bd5-4379-9785-f82efd5232ce",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "96910ee1-6046-4992-8273-1be47df40261",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "13736a4d-7eec-4179-8415-ac4a51295df8",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "14ea884a-bed2-40b0-8cfc-f3c8f93a4e8d",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "20205cef-862d-4e34-8cb4-455609c2daa3",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "dbea0713-7773-4c5f-aa98-03d5c1106360",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "0debd736-fc21-42c4-a2fd-c9636459ca50",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "7d4842b1-5d2c-4e7a-9fa9-d05dc14b3bcf",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "b889c09b-6da5-4117-8ccb-7c0ab3dcde4b",
+        "__expectedType__": "cc.Prefab"
+      }
+    ],
     "ItemMax": 4,
     "ItemArray": [],
     "_id": "56KAVx8tFKj7R2X7YwN/K2"

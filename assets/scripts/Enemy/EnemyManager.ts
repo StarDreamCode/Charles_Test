@@ -49,7 +49,7 @@ export class EnemyManager extends Component {
      */
     EnemyGenerated() {
         this.schedule(() => {
-            const randomDotIndex = math.randomRangeInt(0, this.DotPrefabs.length);
+            const randomDotIndex = math.randomRangeInt(0, this.DotPrefabs.length - 1);
             this.spawnDot(this.DotPrefabs[randomDotIndex]);
         }, this.DotSpawnRate); // 每0.3秒生成一个随机敌人
 

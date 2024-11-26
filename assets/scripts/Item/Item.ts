@@ -11,37 +11,7 @@ export class Item extends Component {
     ItemSpawnRate: number = 4;
 
     @property(Prefab)
-    Item0Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item1Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item2Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item3Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item4Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item5Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item6Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item7Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item8Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item9Prefab: Prefab = null;
-
-    @property(Prefab)
-    Item10Prefab: Prefab = null;
+    ItemPrefabs: Prefab[] = [];
 
     @property
     ItemMax: number = 4;
@@ -68,42 +38,25 @@ export class Item extends Component {
     }
 
     ItemGenerated() {
-        //判断预制体数量是否小于4个再进行生成
-        let count = this.ItemArray.length;
-        if (count > this.ItemMax) {
-            this.unschedule(this.ItemSystemSpawn);
-        } else {
-            this.schedule(this.ItemSystemSpawn, this.ItemSpawnRate);
-        }
+        this.schedule(this.ItemSystemSpawn, this.ItemSpawnRate);
     }
 
     ItemSystemSpawn() {
-        const randomNumber = math.randomRangeInt(0, 10);
-        let Prefab = null;
-        if (randomNumber == 0) {
-            Prefab = this.Item0Prefab
-        } else if (randomNumber == 1) {
-            Prefab = this.Item1Prefab
-        } else if (randomNumber == 2) {
-            Prefab = this.Item2Prefab
-        } else if (randomNumber == 3) {
-            Prefab = this.Item3Prefab
-        } else if (randomNumber == 4) {
-            Prefab = this.Item4Prefab
-        } else if (randomNumber == 5) {
-            Prefab = this.Item5Prefab
-        } else if (randomNumber == 6) {
-            Prefab = this.Item6Prefab
-        } else if (randomNumber == 7) {
-            Prefab = this.Item7Prefab
-        } else if (randomNumber == 8) {
-            Prefab = this.Item8Prefab
-        } else if (randomNumber == 9) {
-            Prefab = this.Item9Prefab
-        } else if (randomNumber == 10) {
-            Prefab = this.Item10Prefab
+        try {
+            //判断预制体数量是否小于4个再进行生成
+            let count = this.ItemArray.length;
+            if (count >= this.ItemMax) {
+                return;
+            }
+            if (this.ItemPrefabs.length === 0) {
+                console.error("No item prefabs available.");
+                return;
+            }
+            const randomItemIndex = math.randomRangeInt(0, this.ItemPrefabs.length - 1);
+            this.ItemSpawn(this.ItemPrefabs[randomItemIndex]);
+        } catch (error) {
+            console.error("Error in ItemSystemSpawn:", error);
         }
-        this.ItemSpawn(Prefab);
     }
 
     /**
@@ -112,6 +65,8 @@ export class Item extends Component {
      * @param Itemprefab 预制件 - 要生成的物品预制件。
      * @returns 返回生成的物品节点。
      */
+
+
     ItemSpawn(Itemprefab: Prefab): Node {
         // this._item.push( math.randomRangeInt(0,10))
         const Item = instantiate(Itemprefab);
@@ -149,6 +104,11 @@ export class Item extends Component {
 
     public onDestroy(): void {
         this.unscheduleAllCallbacks();
+        for (let item of this.ItemArray) {
+            item.destroy();
+        }
+        this.ItemArray.length = 0;
+
     }
 
 
